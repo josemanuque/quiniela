@@ -17,6 +17,27 @@ export interface ProjectedLeaderboardRow {
   rank:             number
 }
 
+export type BreakdownTier =
+  | 'exact'
+  | 'partial_correct'
+  | 'correct_winner'
+  | 'partial_wrong'
+  | 'miss'
+
+export interface LiveBreakdownRow {
+  match_id:        string
+  home_team_name:  string
+  away_team_name:  string
+  home_team_flag:  string | null
+  away_team_flag:  string | null
+  live_home_score: number
+  live_away_score: number
+  pred_home_score: number
+  pred_away_score: number
+  provisional_pts: number
+  tier:            BreakdownTier
+}
+
 export const leaderboardService = {
   async getGlobalLeaderboard(): Promise<GlobalLeaderboardRow[]> {
     const { data, error } = await supabase.rpc('get_global_leaderboard')
@@ -28,5 +49,13 @@ export const leaderboardService = {
     const { data, error } = await supabase.rpc('get_projected_leaderboard')
     if (error) throw error
     return (data ?? []) as ProjectedLeaderboardRow[]
+  },
+
+  async getUserLiveBreakdown(userId: string): Promise<LiveBreakdownRow[]> {
+    const { data, error } = await supabase.rpc('get_user_live_breakdown', {
+      p_user_id: userId,
+    })
+    if (error) throw error
+    return (data ?? []) as LiveBreakdownRow[]
   },
 }

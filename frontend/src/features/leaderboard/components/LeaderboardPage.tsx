@@ -1,5 +1,6 @@
 import { useState } from 'react'
-import { Trophy } from 'lucide-react'
+import { Trophy, HelpCircle } from 'lucide-react'
+import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useLeaderboard } from '../hooks/useLeaderboard'
@@ -23,8 +24,11 @@ export function LeaderboardPage() {
   return (
     <div className="flex-1 flex flex-col bg-zinc-950 min-h-full pb-14">
       {/* Header */}
-      <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3">
+      <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
         <h1 className="text-white font-semibold text-base">Leaderboard</h1>
+        <Link to="/app/rules" className="text-zinc-500 hover:text-zinc-300 transition-colors p-0.5">
+          <HelpCircle size={18} />
+        </Link>
       </div>
 
       {/* Live badge + tab switcher */}
@@ -73,6 +77,7 @@ export function LeaderboardPage() {
           rows.map(row => (
             <LeaderboardRow
               key={row.user_id}
+              userId={row.user_id}
               rank={Number(row.rank)}
               displayName={row.display_name}
               avatarUrl={row.avatar_url}
@@ -80,6 +85,7 @@ export function LeaderboardPage() {
               subPoints={'confirmed_points' in row ? row.confirmed_points : undefined}
               isCurrentUser={row.user_id === user?.id}
               showSub={activeTab === 'projected' && hasLiveMatches}
+              expandable={activeTab === 'projected' && hasLiveMatches}
             />
           ))
         )}

@@ -380,7 +380,10 @@ export type Database = {
           created_at: string
           exact_score_points: number
           id: string
+          partial_correct_winner_points: number
+          partial_wrong_winner_points: number
           phase: Database["public"]["Enums"]["round_phase"]
+          phase_multiplier: number
           updated_at: string
         }
         Insert: {
@@ -389,7 +392,10 @@ export type Database = {
           created_at?: string
           exact_score_points: number
           id?: string
+          partial_correct_winner_points?: number
+          partial_wrong_winner_points?: number
           phase: Database["public"]["Enums"]["round_phase"]
+          phase_multiplier?: number
           updated_at?: string
         }
         Update: {
@@ -398,7 +404,10 @@ export type Database = {
           created_at?: string
           exact_score_points?: number
           id?: string
+          partial_correct_winner_points?: number
+          partial_wrong_winner_points?: number
           phase?: Database["public"]["Enums"]["round_phase"]
+          phase_multiplier?: number
           updated_at?: string
         }
         Relationships: [
@@ -467,7 +476,34 @@ export type Database = {
           user_id: string
         }[]
       }
+      get_user_live_breakdown: {
+        Args: { p_user_id: string }
+        Returns: {
+          away_team_flag: string
+          away_team_name: string
+          home_team_flag: string
+          home_team_name: string
+          live_away_score: number
+          live_home_score: number
+          match_id: string
+          pred_away_score: number
+          pred_home_score: number
+          provisional_pts: number
+          tier: string
+        }[]
+      }
       is_group_member: { Args: { p_group_id: string }; Returns: boolean }
+      recalculate_all_predictions: {
+        Args: { p_competition_id: string }
+        Returns: number
+      }
+      recalculate_phase_predictions: {
+        Args: {
+          p_competition_id: string
+          p_phase: Database["public"]["Enums"]["round_phase"]
+        }
+        Returns: number
+      }
       shares_group_with: { Args: { p_other_user_id: string }; Returns: boolean }
     }
     Enums: {

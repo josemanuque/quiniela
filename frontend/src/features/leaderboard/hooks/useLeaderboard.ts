@@ -17,31 +17,44 @@ export function useLeaderboard() {
     queryFn:  leaderboardService.getProjectedLeaderboard,
   })
 
-  // Refresh projected when any live match score updates
-  // Refresh confirmed when a prediction gets scored (points_earned set)
+  // Direct count of live matches — drives the tab switcher independently of projected data
+  const liveCount = useQuery({
+    queryKey: ['live-matches-count'],
+    queryFn: async () => {
+      const { count } = await supabase
+        .from('matches')
+        .select('*', { count: 'exact', head: true })
+        .eq('status', 'live')
+      return count ?? 0
+    },
+    refetchInterval: 30_000,
+  })
+
   useEffect(() => {
     const channel = supabase
       .channel('leaderboard-realtime')
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'matches' },
-        () => queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') }),
+        () => {
+          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') })
+          void queryClient.invalidateQueries({ queryKey: ['live-matches-count'] })
+        },
       )
       .on(
         'postgres_changes',
         { event: 'UPDATE', schema: 'public', table: 'predictions' },
         () => {
-          queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('confirmed') })
-          queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') })
+          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('confirmed') })
+          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') })
         },
       )
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => { void supabase.removeChannel(channel) }
   }, [queryClient])
 
-  const hasLiveMatches =
-    projected.data?.some(r => r.projected_points > r.confirmed_points) ?? false
+  const hasLiveMatches = (liveCount.data ?? 0) > 0
 
   return { confirmed, projected, hasLiveMatches }
 }

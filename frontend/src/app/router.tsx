@@ -12,6 +12,7 @@ import { MatchesPage } from '@features/match/components/MatchesPage'
 import { GroupsPage } from '@features/group/components/GroupsPage'
 import { GroupDetailPage } from '@features/group/components/GroupDetailPage'
 import { LeaderboardPage } from '@features/leaderboard/components/LeaderboardPage'
+import { RulesPage } from '@features/rules/components/RulesPage'
 
 const rootRoute = createRootRoute({
   component: Outlet,
@@ -78,6 +79,12 @@ const leaderboardRoute = createRoute({
   component: LeaderboardPage,
 })
 
+const rulesRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/rules',
+  component: RulesPage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -87,6 +94,7 @@ const routeTree = rootRoute.addChildren([
     groupsRoute,
     groupDetailRoute,
     leaderboardRoute,
+    rulesRoute,
   ]),
 ])
 
