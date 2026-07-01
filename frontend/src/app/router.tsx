@@ -13,6 +13,8 @@ import { GroupsPage } from '@features/group/components/GroupsPage'
 import { GroupDetailPage } from '@features/group/components/GroupDetailPage'
 import { LeaderboardPage } from '@features/leaderboard/components/LeaderboardPage'
 import { RulesPage } from '@features/rules/components/RulesPage'
+import { ProfilePage } from '@features/profile/components/ProfilePage'
+import { MatchDetailPage } from '@features/match/components/MatchDetailPage'
 
 const rootRoute = createRootRoute({
   component: Outlet,
@@ -54,11 +56,7 @@ const matchesRoute = createRoute({
 const matchDetailRoute = createRoute({
   getParentRoute: () => appRoute,
   path: '/matches/$matchId',
-  component: () => (
-    <div className="min-h-full bg-zinc-950 flex items-center justify-center">
-      <p className="text-zinc-600 text-sm">Match detail — coming soon</p>
-    </div>
-  ),
+  component: MatchDetailPage,
 })
 
 const groupsRoute = createRoute({
@@ -85,6 +83,12 @@ const rulesRoute = createRoute({
   component: RulesPage,
 })
 
+const profileRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: '/profile',
+  component: ProfilePage,
+})
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   loginRoute,
@@ -95,6 +99,7 @@ const routeTree = rootRoute.addChildren([
     groupDetailRoute,
     leaderboardRoute,
     rulesRoute,
+    profileRoute,
   ]),
 ])
 

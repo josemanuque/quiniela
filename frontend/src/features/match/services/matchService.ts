@@ -31,6 +31,25 @@ export const matchService = {
     return data as MatchWithTeams
   },
 
+  async getMatchesNow(competitionId: string): Promise<MatchWithTeams[]> {
+    const todayStart = new Date()
+    todayStart.setHours(0, 0, 0, 0)
+    const tomorrowStart = new Date(todayStart)
+    tomorrowStart.setDate(tomorrowStart.getDate() + 1)
+
+    const { data, error } = await supabase
+      .from('matches')
+      .select(MATCH_SELECT)
+      .eq('competition_id', competitionId)
+      .or(
+        `status.eq.live,and(kickoff_at.gte.${todayStart.toISOString()},kickoff_at.lt.${tomorrowStart.toISOString()})`,
+      )
+      .order('kickoff_at', { ascending: true })
+
+    if (error) throw error
+    return data as MatchWithTeams[]
+  },
+
   async getMatchesByCompetition(competitionId: string): Promise<MatchWithTeams[]> {
     const { data, error } = await supabase
       .from('matches')

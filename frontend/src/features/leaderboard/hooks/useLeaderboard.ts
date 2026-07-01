@@ -4,20 +4,26 @@ import { supabase } from '@/lib/supabaseClient'
 import { queryKeys } from '@/lib/queryKeys'
 import { leaderboardService } from '../services/leaderboardService'
 
-export function useLeaderboard() {
+// groupId=undefined → global leaderboard
+// groupId=<uuid>   → group-scoped leaderboard
+export function useLeaderboard(groupId?: string) {
   const queryClient = useQueryClient()
+  const scope = groupId ?? 'global'
 
   const confirmed = useQuery({
-    queryKey: queryKeys.leaderboard('confirmed'),
-    queryFn:  leaderboardService.getGlobalLeaderboard,
+    queryKey: queryKeys.leaderboard(scope, 'confirmed'),
+    queryFn: groupId
+      ? () => leaderboardService.getGroupLeaderboard(groupId)
+      : leaderboardService.getGlobalLeaderboard,
   })
 
   const projected = useQuery({
-    queryKey: queryKeys.leaderboard('projected'),
-    queryFn:  leaderboardService.getProjectedLeaderboard,
+    queryKey: queryKeys.leaderboard(scope, 'projected'),
+    queryFn: groupId
+      ? () => leaderboardService.getGroupProjectedLeaderboard(groupId)
+      : leaderboardService.getProjectedLeaderboard,
   })
 
-  // Direct count of live matches — drives the tab switcher independently of projected data
   const liveCount = useQuery({
     queryKey: ['live-matches-count'],
     queryFn: async () => {
@@ -32,27 +38,18 @@ export function useLeaderboard() {
 
   useEffect(() => {
     const channel = supabase
-      .channel('leaderboard-realtime')
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'matches' },
-        () => {
-          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') })
-          void queryClient.invalidateQueries({ queryKey: ['live-matches-count'] })
-        },
-      )
-      .on(
-        'postgres_changes',
-        { event: 'UPDATE', schema: 'public', table: 'predictions' },
-        () => {
-          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('confirmed') })
-          void queryClient.invalidateQueries({ queryKey: queryKeys.leaderboard('projected') })
-        },
-      )
+      .channel(`leaderboard-realtime-${scope}`)
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'matches' }, () => {
+        void queryClient.invalidateQueries({ queryKey: ['leaderboard'] })
+        void queryClient.invalidateQueries({ queryKey: ['live-matches-count'] })
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'predictions' }, () => {
+        void queryClient.invalidateQueries({ queryKey: ['leaderboard'] })
+      })
       .subscribe()
 
     return () => { void supabase.removeChannel(channel) }
-  }, [queryClient])
+  }, [queryClient, scope])
 
   const hasLiveMatches = (liveCount.data ?? 0) > 0
 

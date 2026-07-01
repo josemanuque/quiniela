@@ -7,7 +7,7 @@ const NAV_ITEMS = [
   { to: '/app/matches', label: 'Matches', Icon: Calendar, enabled: true },
   { to: '/app/groups', label: 'Groups', Icon: Users, enabled: true },
   { to: '/app/leaderboard', label: 'Leaderboard', Icon: Trophy, enabled: true },
-  { to: '/app/profile', label: 'Profile', Icon: User, enabled: false },
+  { to: '/app/profile', label: 'Profile', Icon: User, enabled: true  },
 ] as const
 
 export function DesktopSidebar() {

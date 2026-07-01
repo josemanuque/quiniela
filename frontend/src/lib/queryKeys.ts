@@ -15,6 +15,6 @@ export const queryKeys = {
   groups:            ()                     => ['groups']                         as const,
   group:             (groupId: string)      => ['groups', groupId]                as const,
   groupMembers:      (groupId: string)      => ['groups', groupId, 'members']     as const,
-  leaderboard:       (groupId: string)      => ['leaderboard', groupId]           as const,
+  leaderboard:       (scope: string, type: 'confirmed' | 'projected') => ['leaderboard', scope, type] as const,
   scoringConfig:     (competitionId: string) => ['scoring', competitionId]        as const,
 } as const

@@ -1,19 +1,20 @@
 import { useState } from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, Star } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LeaderboardBreakdown } from './LeaderboardBreakdown'
 
 interface Props {
-  userId:       string
-  rank:         number
-  displayName:  string
-  avatarUrl:    string | null
-  points:       number
-  subPoints?:   number
+  userId:        string
+  rank:          number
+  displayName:   string
+  avatarUrl:     string | null
+  points:        number
+  subPoints?:    number
+  exactCount?:   number
   isCurrentUser: boolean
-  showSub?:     boolean
-  expandable?:  boolean
+  showSub?:      boolean
+  expandable?:   boolean
 }
 
 const RANK_STYLES: Record<number, string> = {
@@ -33,6 +34,7 @@ export function LeaderboardRow({
   avatarUrl,
   points,
   subPoints,
+  exactCount,
   isCurrentUser,
   showSub,
   expandable,
@@ -75,6 +77,19 @@ export function LeaderboardRow({
           {displayName}
           {isCurrentUser && <span className="ml-1.5 text-[10px] text-zinc-500">(you)</span>}
         </span>
+
+        {/* Exact count */}
+        {exactCount !== undefined && (
+          <div className="flex items-center gap-0.5 flex-shrink-0 w-9 justify-end">
+            <Star
+              size={11}
+              className={exactCount > 0 ? 'text-amber-400 fill-amber-400' : 'text-zinc-700 fill-zinc-700'}
+            />
+            <span className={cn('text-xs tabular-nums', exactCount > 0 ? 'text-zinc-400' : 'text-zinc-700')}>
+              {exactCount}
+            </span>
+          </div>
+        )}
 
         {/* Points + expand chevron */}
         <div className="flex items-center gap-2 flex-shrink-0">

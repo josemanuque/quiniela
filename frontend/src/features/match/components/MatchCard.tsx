@@ -1,13 +1,11 @@
+import { useNavigate } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
-import type { MatchWithTeams } from '@/types/domain.types'
+import type { MatchWithTeams, PredictionTier } from '@/types/domain.types'
 import { formatKickoffDate, formatKickoffTime } from '../utils/matchUtils'
 import { TeamFlag } from './TeamFlag'
 import { PredictionInput } from '@/features/prediction/components/PredictionInput'
-
-interface MatchCardProps {
-  match: MatchWithTeams
-  onClick?: () => void
-}
+import { useMyPrediction } from '@/features/prediction/hooks/useMyPrediction'
+import { TIER_BORDER_CLASSES } from '@/features/prediction/utils/tierUtils'
 
 function ScoreOrTime({ match }: { match: MatchWithTeams }) {
   if (match.status === 'live') {
@@ -25,12 +23,17 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
   }
 
   if (match.status === 'completed') {
+    const hasPens = (match as MatchWithTeams & { home_penalties?: number | null }).home_penalties != null
+    const hp = (match as MatchWithTeams & { home_penalties?: number | null }).home_penalties
+    const ap = (match as MatchWithTeams & { away_penalties?: number | null }).away_penalties
     return (
       <div className="text-center min-w-[88px]">
         <span className="text-white font-bold text-2xl tabular-nums">
           {match.home_score} – {match.away_score}
         </span>
-        <div className="text-zinc-600 text-xs mt-0.5">FT</div>
+        <div className="text-zinc-600 text-xs mt-0.5">
+          {hasPens ? `Pen ${hp}–${ap}` : 'FT'}
+        </div>
       </div>
     )
   }
@@ -44,18 +47,28 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
   )
 }
 
-export function MatchCard({ match, onClick }: MatchCardProps) {
-  const isClickable = !!onClick
+export function MatchCard({ match }: { match: MatchWithTeams }) {
+  const navigate = useNavigate()
+  const { data: prediction } = useMyPrediction(match.id)
+
+  const isClickable = match.status !== 'upcoming'
+  const tier = prediction?.tier as PredictionTier | null | undefined
+
+  function handleClick() {
+    if (!isClickable) return
+    void navigate({ to: '/app/matches/$matchId', params: { matchId: match.id } })
+  }
 
   return (
     <div
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
-      onClick={onClick}
-      onKeyDown={isClickable ? e => e.key === 'Enter' && onClick?.() : undefined}
+      onClick={isClickable ? handleClick : undefined}
+      onKeyDown={isClickable ? e => e.key === 'Enter' && handleClick() : undefined}
       className={cn(
-        'bg-zinc-900 rounded-lg px-4 py-4',
-        isClickable && 'cursor-pointer hover:bg-zinc-800 active:bg-zinc-800 transition-colors',
+        'bg-zinc-900 rounded-lg px-4 py-4 border-l-2 transition-colors',
+        isClickable && 'cursor-pointer hover:bg-zinc-800 active:bg-zinc-800',
+        tier ? TIER_BORDER_CLASSES[tier] : 'border-l-transparent',
       )}
     >
       <div className="flex items-center justify-between gap-4">

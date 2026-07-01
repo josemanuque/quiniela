@@ -195,11 +195,13 @@ export type Database = {
       }
       matches: {
         Row: {
+          away_penalties: number | null
           away_score: number | null
           away_team_id: string
           competition_id: string
           created_at: string
           external_id: string | null
+          home_penalties: number | null
           home_score: number | null
           home_team_id: string
           id: string
@@ -209,11 +211,13 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          away_penalties?: number | null
           away_score?: number | null
           away_team_id: string
           competition_id: string
           created_at?: string
           external_id?: string | null
+          home_penalties?: number | null
           home_score?: number | null
           home_team_id: string
           id?: string
@@ -223,11 +227,13 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          away_penalties?: number | null
           away_score?: number | null
           away_team_id?: string
           competition_id?: string
           created_at?: string
           external_id?: string | null
+          home_penalties?: number | null
           home_score?: number | null
           home_team_id?: string
           id?: string
@@ -276,6 +282,7 @@ export type Database = {
           locked_at: string | null
           match_id: string
           points_earned: number | null
+          tier: string | null
           updated_at: string
           user_id: string
         }
@@ -287,6 +294,7 @@ export type Database = {
           locked_at?: string | null
           match_id: string
           points_earned?: number | null
+          tier?: string | null
           updated_at?: string
           user_id: string
         }
@@ -298,6 +306,7 @@ export type Database = {
           locked_at?: string | null
           match_id?: string
           points_earned?: number | null
+          tier?: string | null
           updated_at?: string
           user_id?: string
         }
@@ -460,9 +469,43 @@ export type Database = {
         Returns: {
           avatar_url: string
           display_name: string
+          exact_count: number
           rank: number
           total_points: number
           user_id: string
+        }[]
+      }
+      get_group_leaderboard: {
+        Args: { p_group_id: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          exact_count: number
+          rank: number
+          total_points: number
+          user_id: string
+        }[]
+      }
+      get_group_projected_leaderboard: {
+        Args: { p_group_id: string }
+        Returns: {
+          avatar_url: string
+          confirmed_points: number
+          display_name: string
+          exact_count: number
+          projected_points: number
+          rank: number
+          user_id: string
+        }[]
+      }
+      get_my_profile_stats: {
+        Args: never
+        Returns: {
+          correct_predictions: number
+          global_rank: number
+          predictions_made: number
+          scored_predictions: number
+          total_points: number
         }[]
       }
       get_projected_leaderboard: {
@@ -471,6 +514,7 @@ export type Database = {
           avatar_url: string
           confirmed_points: number
           display_name: string
+          exact_count: number
           projected_points: number
           rank: number
           user_id: string

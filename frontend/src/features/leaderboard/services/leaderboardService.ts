@@ -5,6 +5,7 @@ export interface GlobalLeaderboardRow {
   display_name: string
   avatar_url:   string | null
   total_points: number
+  exact_count:  number
   rank:         number
 }
 
@@ -14,6 +15,7 @@ export interface ProjectedLeaderboardRow {
   avatar_url:       string | null
   confirmed_points: number
   projected_points: number
+  exact_count:      number
   rank:             number
 }
 
@@ -51,10 +53,20 @@ export const leaderboardService = {
     return (data ?? []) as ProjectedLeaderboardRow[]
   },
 
+  async getGroupLeaderboard(groupId: string): Promise<GlobalLeaderboardRow[]> {
+    const { data, error } = await supabase.rpc('get_group_leaderboard', { p_group_id: groupId })
+    if (error) throw error
+    return (data ?? []) as GlobalLeaderboardRow[]
+  },
+
+  async getGroupProjectedLeaderboard(groupId: string): Promise<ProjectedLeaderboardRow[]> {
+    const { data, error } = await supabase.rpc('get_group_projected_leaderboard', { p_group_id: groupId })
+    if (error) throw error
+    return (data ?? []) as ProjectedLeaderboardRow[]
+  },
+
   async getUserLiveBreakdown(userId: string): Promise<LiveBreakdownRow[]> {
-    const { data, error } = await supabase.rpc('get_user_live_breakdown', {
-      p_user_id: userId,
-    })
+    const { data, error } = await supabase.rpc('get_user_live_breakdown', { p_user_id: userId })
     if (error) throw error
     return (data ?? []) as LiveBreakdownRow[]
   },

@@ -3,12 +3,13 @@ import { cn } from '@/lib/utils'
 interface TeamFlagProps {
   flagUrl: string | null
   name: string
-  size?: 'sm' | 'md'
+  size?: 'sm' | 'md' | 'lg'
 }
 
 const sizeClasses = {
   sm: 'w-5 h-4',
   md: 'w-7 h-5',
+  lg: 'w-10 h-7',
 }
 
 export function TeamFlag({ flagUrl, name, size = 'sm' }: TeamFlagProps) {

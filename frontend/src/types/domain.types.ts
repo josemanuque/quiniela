@@ -42,3 +42,14 @@ export type GroupWithMemberCount = Group & {
 export type PredictionWithMatch = Prediction & {
   match: MatchWithTeams
 }
+
+export type PredictionWithProfile = Prediction & {
+  profile: Pick<Profile, 'display_name' | 'avatar_url'>
+}
+
+export type PredictionTier =
+  | 'exact'
+  | 'partial_correct_winner'
+  | 'correct_winner'
+  | 'partial_wrong'
+  | 'miss'

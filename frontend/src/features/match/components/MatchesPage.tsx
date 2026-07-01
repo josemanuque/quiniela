@@ -3,27 +3,36 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useActiveCompetition } from '@features/competition/hooks/useActiveCompetition'
 import { useRounds } from '@features/competition/hooks/useRounds'
 import { useMatchesByRound } from '../hooks/useMatchesByRound'
+import { useNowMatches, NOW_ROUND_ID } from '../hooks/useNowMatches'
 import { RoundTabs } from './RoundTabs'
 import { MatchList } from './MatchList'
 
 export function MatchesPage() {
-  const navigate = useNavigate()
+  const navigate    = useNavigate()
   const { round: selectedRoundId } = useSearch({ from: '/app/matches' })
 
   const { data: competition } = useActiveCompetition()
-  const { data: rounds } = useRounds(competition?.id)
-  const { data: matches, isLoading: matchesLoading } = useMatchesByRound(selectedRoundId)
+  const { data: rounds }      = useRounds(competition?.id)
 
-  // Auto-select the first round when no round is in the URL
+  const isNow = selectedRoundId === NOW_ROUND_ID
+  const { data: nowMatches,   isLoading: nowLoading   } = useNowMatches(competition?.id)
+  const { data: roundMatches, isLoading: roundLoading } = useMatchesByRound(
+    isNow ? undefined : selectedRoundId,
+  )
+
+  const matches   = isNow ? nowMatches   : roundMatches
+  const isLoading = isNow ? nowLoading   : roundLoading
+
+  // Default to "Now" on first load (no round in URL)
   useEffect(() => {
-    if (rounds && rounds.length > 0 && !selectedRoundId) {
+    if (!selectedRoundId && competition) {
       void navigate({
         to: '/app/matches',
-        search: { round: rounds[0].id },
+        search: { round: NOW_ROUND_ID },
         replace: true,
       })
     }
-  }, [rounds, selectedRoundId, navigate])
+  }, [selectedRoundId, competition, navigate])
 
   function handleRoundSelect(roundId: string) {
     void navigate({ to: '/app/matches', search: { round: roundId } })
@@ -39,7 +48,16 @@ export function MatchesPage() {
         />
       )}
 
-      <MatchList matches={matches} isLoading={matchesLoading} />
+      {isNow && !isLoading && (!matches || matches.length === 0) ? (
+        <div className="flex flex-col items-center justify-center py-16 px-4 gap-3">
+          <p className="text-zinc-400 text-sm font-medium">No matches today</p>
+          <p className="text-zinc-600 text-xs text-center">
+            Browse the round tabs above to see upcoming or past matches.
+          </p>
+        </div>
+      ) : (
+        <MatchList matches={matches} isLoading={isLoading} />
+      )}
     </div>
   )
 }

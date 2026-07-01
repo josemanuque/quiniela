@@ -1,5 +1,5 @@
 import { supabase } from '@/lib/supabaseClient'
-import type { Prediction } from '@/types/domain.types'
+import type { Prediction, PredictionWithProfile } from '@/types/domain.types'
 
 export const predictionService = {
   async upsertPrediction(matchId: string, homeScore: number, awayScore: number): Promise<Prediction> {
@@ -34,13 +34,29 @@ export const predictionService = {
     return data as Prediction | null
   },
 
-  async getMatchPredictions(matchId: string): Promise<Prediction[]> {
-    const { data, error } = await supabase
+  async getMatchPredictions(matchId: string): Promise<PredictionWithProfile[]> {
+    const { data: preds, error: predErr } = await supabase
       .from('predictions')
       .select('*')
       .eq('match_id', matchId)
+      .order('points_earned', { ascending: false, nullsFirst: false })
 
-    if (error) throw error
-    return (data ?? []) as Prediction[]
+    if (predErr) throw predErr
+    if (!preds || preds.length === 0) return []
+
+    const userIds = [...new Set(preds.map(p => p.user_id))]
+    const { data: profiles, error: profileErr } = await supabase
+      .from('profiles')
+      .select('id, display_name, avatar_url')
+      .in('id', userIds)
+
+    if (profileErr) throw profileErr
+
+    const profileMap = new Map((profiles ?? []).map(p => [p.id, p]))
+
+    return preds.map(p => ({
+      ...p,
+      profile: profileMap.get(p.user_id) ?? { display_name: 'Unknown', avatar_url: null },
+    })) as PredictionWithProfile[]
   },
 }

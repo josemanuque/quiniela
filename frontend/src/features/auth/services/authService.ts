@@ -7,6 +7,9 @@ export const authService = {
       provider: 'google',
       options: {
         redirectTo: `${window.location.origin}/app/matches`,
+        queryParams: {
+          prompt: 'select_account',
+        },
       },
     })
     if (error) throw error

@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { Lock, Check } from 'lucide-react'
 import { cn } from '@/lib/utils'
-import type { MatchWithTeams } from '@/types/domain.types'
+import type { MatchWithTeams, PredictionTier } from '@/types/domain.types'
 import { isMatchEditable } from '@/features/match/utils/matchUtils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyPrediction } from '../hooks/useMyPrediction'
 import { useSavePrediction } from '../hooks/useSavePrediction'
+import { TIER_TEXT_CLASSES } from '../utils/tierUtils'
 
 interface Props {
   match: MatchWithTeams
@@ -47,6 +48,8 @@ export function PredictionInput({ match }: Props) {
         </div>
       )
     }
+    const tier = prediction.tier as PredictionTier | null
+    const ptsClass = tier ? TIER_TEXT_CLASSES[tier] : 'text-zinc-400'
     return (
       <div className="text-center mt-2.5">
         <span className="text-xs text-zinc-500">
@@ -55,7 +58,7 @@ export function PredictionInput({ match }: Props) {
             {prediction.home_score} – {prediction.away_score}
           </span>
           {prediction.points_earned !== null && (
-            <span className="ml-2 text-emerald-400 font-semibold">
+            <span className={cn('ml-2 font-semibold', ptsClass)}>
               +{prediction.points_earned}pts
             </span>
           )}
