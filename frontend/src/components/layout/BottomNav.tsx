@@ -13,7 +13,7 @@ export function BottomNav() {
   const pathname = useRouterState({ select: s => s.location.pathname })
 
   return (
-    <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md z-50 bg-zinc-950/95 backdrop-blur border-t border-zinc-800 h-14 flex">
+    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur border-t border-zinc-800 h-16 flex">
       {NAV_ITEMS.map(({ to, label, Icon, enabled }) => {
         const isActive = pathname.startsWith(to)
 
@@ -21,10 +21,10 @@ export function BottomNav() {
           return (
             <div
               key={to}
-              className="flex-1 flex flex-col items-center justify-center gap-0.5 opacity-40 cursor-not-allowed"
+              className="flex-1 flex flex-col items-center justify-center gap-1 opacity-40 cursor-not-allowed"
             >
-              <Icon size={20} className="text-zinc-500" />
-              <span className="text-[10px] text-zinc-500">{label}</span>
+              <Icon size={22} className="text-zinc-500" />
+              <span className="text-xs text-zinc-500">{label}</span>
             </div>
           )
         }
@@ -34,12 +34,12 @@ export function BottomNav() {
             key={to}
             to={to}
             className={cn(
-              'flex-1 flex flex-col items-center justify-center gap-0.5 transition-colors',
+              'flex-1 flex flex-col items-center justify-center gap-1 transition-colors',
               isActive ? 'text-emerald-400' : 'text-zinc-500 hover:text-zinc-300',
             )}
           >
-            <Icon size={20} />
-            <span className="text-[10px]">{label}</span>
+            <Icon size={22} />
+            <span className="text-xs">{label}</span>
           </Link>
         )
       })}

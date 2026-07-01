@@ -20,7 +20,7 @@ export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps)
   return (
     <div
       ref={listRef}
-      className="flex gap-1.5 overflow-x-auto scrollbar-none px-4 py-2.5 border-b border-zinc-800"
+      className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-3 border-b border-zinc-800"
       role="tablist"
       aria-label="Tournament rounds"
     >
@@ -35,7 +35,7 @@ export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps)
             aria-selected={isActive}
             onClick={() => handleSelect(round.id)}
             className={cn(
-              'flex-shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+              'flex-shrink-0 h-8 px-3.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
               isActive
                 ? 'bg-emerald-500 text-white'
                 : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200',

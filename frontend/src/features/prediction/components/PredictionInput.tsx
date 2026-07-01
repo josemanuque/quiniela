@@ -12,7 +12,7 @@ interface Props {
 }
 
 const INPUT_CLASS =
-  'w-10 h-7 text-center text-sm font-medium tabular-nums bg-zinc-800 border border-zinc-700 ' +
+  'w-14 h-10 text-center text-base font-medium tabular-nums bg-zinc-800 border border-zinc-700 ' +
   'rounded text-white outline-none focus:border-emerald-500 transition-colors ' +
   '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
 
@@ -41,15 +41,15 @@ export function PredictionInput({ match }: Props) {
   if (!editable) {
     if (!prediction) {
       return (
-        <div className="flex items-center justify-center gap-1 mt-2 text-zinc-600">
-          <Lock size={10} />
-          <span className="text-[10px]">No prediction</span>
+        <div className="flex items-center justify-center gap-1 mt-2.5 text-zinc-600">
+          <Lock size={12} />
+          <span className="text-xs">No prediction</span>
         </div>
       )
     }
     return (
-      <div className="text-center mt-2">
-        <span className="text-[11px] text-zinc-500">
+      <div className="text-center mt-2.5">
+        <span className="text-xs text-zinc-500">
           Your pick:{' '}
           <span className="text-zinc-300 font-semibold tabular-nums">
             {prediction.home_score} – {prediction.away_score}
@@ -72,9 +72,9 @@ export function PredictionInput({ match }: Props) {
   }
 
   return (
-    <div className="flex items-center justify-center gap-2 mt-2.5">
-      <span className="text-[10px] text-zinc-600 uppercase tracking-wide">Predict</span>
-      <div className="flex items-center gap-1.5">
+    <div className="relative flex items-center justify-center mt-3">
+      <span className="absolute left-0 text-xs text-zinc-600 uppercase tracking-wide">Predict</span>
+      <div className="flex items-center gap-2">
         <input
           type="number"
           min={0}
@@ -85,7 +85,7 @@ export function PredictionInput({ match }: Props) {
           placeholder="0"
           className={INPUT_CLASS}
         />
-        <span className="text-zinc-500 text-sm font-medium">–</span>
+        <span className="text-zinc-500 text-base font-medium">–</span>
         <input
           type="number"
           min={0}
@@ -99,11 +99,11 @@ export function PredictionInput({ match }: Props) {
       </div>
       <div
         className={cn(
-          'transition-opacity duration-700',
+          'absolute right-0 transition-opacity duration-700',
           isSuccess && !isPending ? 'opacity-100' : 'opacity-0',
         )}
       >
-        <Check size={12} className="text-emerald-400" />
+        <Check size={14} className="text-emerald-400" />
       </div>
     </div>
   )
