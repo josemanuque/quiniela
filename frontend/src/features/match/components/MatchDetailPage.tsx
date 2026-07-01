@@ -235,7 +235,7 @@ export function MatchDetailPage() {
       )}
 
       {(isLive || isCompleted) && (
-        <>
+        <div className="max-w-2xl mx-auto w-full">
           {/* Group scope chips */}
           {hasGroups && (
             <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 pt-3 pb-2">
@@ -268,7 +268,7 @@ export function MatchDetailPage() {
           )}
 
           {/* Predictions list */}
-          <div className="flex-1 px-4 py-2 space-y-1.5 pb-6">
+          <div className="flex-1 px-4 py-2 space-y-1.5 pb-6 max-w-2xl mx-auto w-full">
             {isLoading ? (
               <div className="space-y-1.5">
                 {[1, 2, 3, 4].map(i => (
@@ -294,7 +294,7 @@ export function MatchDetailPage() {
               ))
             )}
           </div>
-        </>
+        </div>
       )}
     </div>
   )

@@ -44,7 +44,9 @@ export function LeaderboardPage() {
 
       {/* Scope selector — Global + one chip per group */}
       {hasGroups && (
-        <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-2.5 border-b border-zinc-800">
+        <div className="relative border-b border-zinc-800">
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
+        <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-2.5">
           <button
             onClick={() => setScope('global')}
             className={cn(
@@ -71,11 +73,12 @@ export function LeaderboardPage() {
             </button>
           ))}
         </div>
+        </div>
       )}
 
       {/* Projected / Confirmed tab switcher — only when live matches exist */}
       {hasLiveMatches && (
-        <div className="flex items-center gap-2 px-4 mt-3">
+        <div className="flex items-center gap-2 px-4 mt-3 max-w-2xl mx-auto w-full">
           <div className="flex items-center gap-1.5 bg-zinc-900 rounded-full p-0.5 flex-1">
             {(['projected', 'confirmed'] as Tab[]).map(t => (
               <button
@@ -96,7 +99,7 @@ export function LeaderboardPage() {
       )}
 
       {/* Rows */}
-      <div className="flex-1 px-4 py-3 space-y-1.5">
+      <div className="flex-1 px-4 py-3 space-y-1.5 max-w-2xl mx-auto w-full">
         {isLoading ? (
           <div className="space-y-1.5">
             {[1, 2, 3, 4, 5].map(i => (

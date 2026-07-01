@@ -19,7 +19,7 @@ export function MatchList({ matches, isLoading }: MatchListProps) {
   }
 
   return (
-    <div className="px-4 py-3 space-y-2">
+    <div className="px-4 py-3 space-y-2 max-w-2xl mx-auto w-full">
       {matches.map(match => (
         <MatchCard key={match.id} match={match} />
       ))}

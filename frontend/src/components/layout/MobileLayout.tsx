@@ -12,9 +12,7 @@ export function MobileLayout() {
         <div className="flex flex-col flex-1 min-w-0 md:pl-60">
           <AppHeader />
           <main className="flex-1 overflow-y-auto pb-16 md:pb-0">
-            <div className="max-w-2xl mx-auto w-full min-h-full">
-              <Outlet />
-            </div>
+            <Outlet />
           </main>
           <BottomNav />
         </div>

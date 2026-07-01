@@ -172,7 +172,7 @@ export function RulesPage() {
         <h1 className="text-white font-semibold text-base">Scoring Rules</h1>
       </div>
 
-      <div className="flex-1 px-4 py-4 space-y-4 max-w-lg">
+      <div className="flex-1 px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
         {/* Phase toggle */}
         <div className="flex items-center gap-1.5 bg-zinc-900 rounded-full p-1">
           {(['group', 'knockout'] as Phase[]).map(p => (

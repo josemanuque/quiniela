@@ -29,7 +29,7 @@ export function GroupsPage() {
         </button>
       </div>
 
-      <div className="flex-1 px-4 py-3 space-y-2">
+      <div className="flex-1 px-4 py-3 space-y-2 max-w-2xl mx-auto w-full">
         {isLoading ? (
           <div className="space-y-2">
             {[1, 2].map(i => (

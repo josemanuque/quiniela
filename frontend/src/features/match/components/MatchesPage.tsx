@@ -49,7 +49,7 @@ export function MatchesPage() {
       )}
 
       {isNow && !isLoading && (!matches || matches.length === 0) ? (
-        <div className="flex flex-col items-center justify-center py-16 px-4 gap-3">
+        <div className="flex flex-col items-center justify-center py-16 px-4 gap-3 max-w-2xl mx-auto w-full">
           <p className="text-zinc-400 text-sm font-medium">No matches today</p>
           <p className="text-zinc-600 text-xs text-center">
             Browse the round tabs above to see upcoming or past matches.

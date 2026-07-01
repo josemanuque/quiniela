@@ -64,7 +64,7 @@ export function ProfilePage() {
         <h1 className="text-white font-semibold text-base">Profile</h1>
       </div>
 
-      <div className="flex-1 px-4 py-6 space-y-6 max-w-lg">
+      <div className="flex-1 px-4 py-6 space-y-6 max-w-lg mx-auto w-full">
         {/* Hero */}
         <div className="flex flex-col items-center gap-2 pt-2">
           <div className="w-20 h-20 rounded-full overflow-hidden bg-zinc-800 ring-2 ring-zinc-700">

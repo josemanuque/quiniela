@@ -74,6 +74,9 @@ export function GroupDetailPage() {
         </button>
       </div>
 
+      {/* Content — constrained width */}
+      <div className="max-w-2xl mx-auto w-full">
+
       {/* Invite code */}
       {group && (
         <div className="mx-4 mt-4 bg-zinc-900 rounded-lg px-4 py-3 flex items-center gap-3">
@@ -94,7 +97,7 @@ export function GroupDetailPage() {
       )}
 
       {/* Members */}
-      <div className="px-4 mt-4">
+      <div className="px-4 mt-4 pb-6">
         <p className="text-zinc-500 text-xs uppercase tracking-wide mb-3">
           Members · {members?.length ?? 0}
         </p>
@@ -127,6 +130,7 @@ export function GroupDetailPage() {
           </div>
         )}
       </div>
+      </div>{/* /max-w-2xl */}
     </div>
   )
 }
