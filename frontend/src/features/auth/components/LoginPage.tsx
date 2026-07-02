@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { authService } from '../services/authService'
 
 function GoogleIcon() {
@@ -24,12 +25,14 @@ function GoogleIcon() {
 }
 
 export function LoginPage() {
+  const { t } = useTranslation()
+
   return (
     <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-sm space-y-10">
         <div className="text-center space-y-2">
-          <div className="text-4xl font-bold text-white tracking-tight">Quiniela</div>
-          <div className="text-zinc-400 text-sm">FIFA World Cup 2026</div>
+          <div className="text-4xl font-bold text-white tracking-tight">{t('appTitle')}</div>
+          <div className="text-zinc-400 text-sm">{t('appSubtitle')}</div>
         </div>
 
         <button
@@ -38,12 +41,10 @@ export function LoginPage() {
           className="w-full flex items-center justify-center gap-3 bg-white text-zinc-900 rounded-xl px-6 py-3.5 text-sm font-medium hover:bg-zinc-100 active:bg-zinc-200 transition-colors"
         >
           <GoogleIcon />
-          Continue with Google
+          {t('auth.continueWithGoogle')}
         </button>
 
-        <p className="text-center text-zinc-600 text-xs">
-          By continuing you accept our terms and privacy policy.
-        </p>
+        <p className="text-center text-zinc-600 text-xs">{t('auth.legal')}</p>
       </div>
     </div>
   )

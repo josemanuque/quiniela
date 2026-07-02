@@ -1,4 +1,5 @@
 import { useRef, useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { Round } from '@/types/domain.types'
 import { getRoundTabLabel } from '../utils/roundUtils'
@@ -11,6 +12,7 @@ interface RoundTabsProps {
 }
 
 export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps) {
+  const { t } = useTranslation()
   const listRef = useRef<HTMLDivElement>(null)
 
   // Convert vertical mouse-wheel scroll to horizontal on desktop.
@@ -38,7 +40,7 @@ export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps)
         ref={listRef}
         className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-3"
         role="tablist"
-        aria-label="Tournament rounds"
+        aria-label={t('match.roundsAriaLabel')}
       >
         {/* Smart "Now" tab — always first */}
         <button
@@ -55,7 +57,7 @@ export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps)
           )}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-current opacity-80" />
-          Now
+          {t('match.now')}
         </button>
 
         {rounds.map((round) => {

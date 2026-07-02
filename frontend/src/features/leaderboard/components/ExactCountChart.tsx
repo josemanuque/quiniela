@@ -8,6 +8,7 @@ import {
   Cell,
   ResponsiveContainer,
 } from 'recharts'
+import { useTranslation } from 'react-i18next'
 import type { GlobalLeaderboardRow } from '../services/leaderboardService'
 
 interface Props {
@@ -28,6 +29,7 @@ const TOOLTIP_STYLE = {
 }
 
 export function ExactCountChart({ rows, currentUserId }: Props) {
+  const { t } = useTranslation()
   const data = [...rows]
     .sort((a, b) => b.exact_count - a.exact_count)
     .map((r) => ({
@@ -46,7 +48,7 @@ export function ExactCountChart({ rows, currentUserId }: Props) {
           {...TOOLTIP_STYLE}
           formatter={(v) => {
             const n = typeof v === 'number' ? v : 0
-            return [`${n.toString()} exact${n !== 1 ? 's' : ''}`, ''] as [string, string]
+            return [t('leaderboard.exactCount', { count: n }), ''] as [string, string]
           }}
         />
         <Bar dataKey="count" radius={[4, 4, 0, 0]} maxBarSize={48}>

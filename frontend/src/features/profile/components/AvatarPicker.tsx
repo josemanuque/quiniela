@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { Upload } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 interface Option {
@@ -29,6 +30,7 @@ export function AvatarPicker({
   onUpload,
   isPending,
 }: Props) {
+  const { t } = useTranslation()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const options: Option[] = [
@@ -57,7 +59,9 @@ export function AvatarPicker({
         <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-dashed border-zinc-600 group-hover:border-zinc-400 transition-all bg-zinc-800/60 flex items-center justify-center">
           <Upload size={18} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
         </div>
-        <span className="text-[10px] text-zinc-500 group-hover:text-zinc-400">Upload</span>
+        <span className="text-[10px] text-zinc-500 group-hover:text-zinc-400">
+          {t('profile.upload')}
+        </span>
       </button>
 
       <input

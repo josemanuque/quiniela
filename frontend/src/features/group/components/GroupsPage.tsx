@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Plus, UserPlus, Users } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from '@tanstack/react-router'
 import { useMyGroups } from '../hooks/useMyGroups'
 import { useActiveCompetition } from '@/features/competition/hooks/useActiveCompetition'
@@ -8,6 +9,7 @@ import { CreateGroupDialog } from './CreateGroupDialog'
 import { JoinGroupDialog } from './JoinGroupDialog'
 
 export function GroupsPage() {
+  const { t } = useTranslation()
   const [showCreate, setShowCreate] = useState(false)
   const [showJoin, setShowJoin] = useState(false)
   const navigate = useNavigate()
@@ -19,7 +21,7 @@ export function GroupsPage() {
     <div className="flex-1 flex flex-col bg-zinc-950 min-h-full pb-14">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-white font-semibold text-base">Groups</h1>
+        <h1 className="text-white font-semibold text-base">{t('group.title')}</h1>
         <div className="flex items-center gap-3">
           <button
             onClick={() => {
@@ -28,7 +30,7 @@ export function GroupsPage() {
             className="flex items-center gap-1.5 text-sm text-emerald-400 hover:text-emerald-300 transition-colors"
           >
             <UserPlus size={15} />
-            Join
+            {t('group.join')}
           </button>
         </div>
       </div>
@@ -56,10 +58,8 @@ export function GroupsPage() {
               <Users size={28} className="text-zinc-500" />
             </div>
             <div className="text-center">
-              <p className="text-white font-medium">No groups yet</p>
-              <p className="text-zinc-500 text-sm mt-1">
-                Create a group or join one with an invite code
-              </p>
+              <p className="text-white font-medium">{t('group.noGroupsYet')}</p>
+              <p className="text-zinc-500 text-sm mt-1">{t('group.noGroupsDesc')}</p>
             </div>
             <div className="flex gap-3 mt-2">
               <button
@@ -68,7 +68,7 @@ export function GroupsPage() {
                 }}
                 className="px-4 py-2 rounded-lg border border-zinc-700 text-zinc-300 text-sm hover:border-zinc-600 transition-colors"
               >
-                Join group
+                {t('group.joinGroup')}
               </button>
               <button
                 onClick={() => {
@@ -76,7 +76,7 @@ export function GroupsPage() {
                 }}
                 className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-sm font-medium transition-colors"
               >
-                Create group
+                {t('group.createGroup')}
               </button>
             </div>
           </div>
@@ -90,7 +90,7 @@ export function GroupsPage() {
             setShowCreate(true)
           }}
           className="fixed bottom-20 right-4 w-12 h-12 rounded-full bg-emerald-600 hover:bg-emerald-500 active:bg-emerald-700 text-white shadow-lg flex items-center justify-center transition-colors z-40"
-          aria-label="Create group"
+          aria-label={t('group.createGroup')}
         >
           <Plus size={22} />
         </button>

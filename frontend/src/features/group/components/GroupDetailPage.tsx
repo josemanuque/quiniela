@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ArrowLeft, Copy, Check, LogOut, Trophy, Pencil, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useGroupMembers } from '../hooks/useGroupMembers'
@@ -19,6 +20,7 @@ function initials(name: string): string {
 }
 
 export function GroupDetailPage() {
+  const { t } = useTranslation()
   const { groupId } = useParams({ from: '/app/groups/$groupId' })
   const navigate = useNavigate()
   const { user } = useAuth()
@@ -83,7 +85,7 @@ export function GroupDetailPage() {
             void navigate({ to: '/app/groups' })
           }}
           className="text-zinc-400 hover:text-white transition-colors"
-          aria-label="Back"
+          aria-label={t('group.back')}
         >
           <ArrowLeft size={20} />
         </button>
@@ -96,7 +98,7 @@ export function GroupDetailPage() {
           }}
           disabled={leaving}
           className="text-zinc-600 hover:text-red-400 transition-colors"
-          aria-label="Leave group"
+          aria-label={t('group.leaveGroup')}
         >
           <LogOut size={18} />
         </button>
@@ -112,13 +114,13 @@ export function GroupDetailPage() {
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <p className="text-amber-300/80 text-xs font-semibold uppercase tracking-wide">
-                    Stakes
+                    {t('group.stakes')}
                   </p>
                   {isOwner && !editingStakes && (
                     <button
                       onClick={startEditStakes}
                       className="text-zinc-600 hover:text-zinc-400 transition-colors"
-                      aria-label="Edit stakes"
+                      aria-label={t('group.editStakes')}
                     >
                       <Pencil size={11} />
                     </button>
@@ -135,7 +137,7 @@ export function GroupDetailPage() {
                         setStakesInput(e.target.value)
                       }}
                       maxLength={200}
-                      placeholder="e.g. Last place buys pizza 🍕"
+                      placeholder={t('group.stakesPlaceholder')}
                       className="flex-1 h-8 px-2.5 rounded-lg bg-zinc-800 border border-zinc-600 text-white text-xs placeholder:text-zinc-600 outline-none focus:border-amber-500 transition-colors"
                       onKeyDown={(e) => {
                         if (e.key === 'Enter') void saveStakes()
@@ -147,7 +149,7 @@ export function GroupDetailPage() {
                       disabled={savingStakes}
                       className="h-8 px-2.5 rounded-lg bg-amber-600 hover:bg-amber-500 text-white text-xs font-medium transition-colors disabled:opacity-50"
                     >
-                      {savingStakes ? '…' : 'Save'}
+                      {savingStakes ? '…' : t('group.save')}
                     </button>
                     <button
                       onClick={() => {
@@ -165,7 +167,7 @@ export function GroupDetailPage() {
                     onClick={startEditStakes}
                     className="text-zinc-600 hover:text-zinc-400 text-xs mt-0.5 transition-colors"
                   >
-                    Add stakes or prize for this group…
+                    {t('group.addStakes')}
                   </button>
                 )}
               </div>
@@ -177,7 +179,9 @@ export function GroupDetailPage() {
         {group && (
           <div className="mx-4 mt-4 bg-zinc-900 rounded-lg px-4 py-3 flex items-center gap-3">
             <div className="flex-1">
-              <p className="text-zinc-500 text-xs uppercase tracking-wide mb-1">Invite code</p>
+              <p className="text-zinc-500 text-xs uppercase tracking-wide mb-1">
+                {t('group.inviteCode')}
+              </p>
               <p className="text-emerald-400 font-mono font-bold text-lg tracking-widest">
                 {group.invite_code}
               </p>
@@ -185,7 +189,7 @@ export function GroupDetailPage() {
             <button
               onClick={handleCopy}
               className="text-zinc-500 hover:text-white transition-colors"
-              aria-label="Copy invite code"
+              aria-label={t('group.copyInviteCode')}
             >
               {copied ? <Check size={18} className="text-emerald-400" /> : <Copy size={18} />}
             </button>
@@ -195,7 +199,7 @@ export function GroupDetailPage() {
         {/* Members */}
         <div className="px-4 mt-4 pb-6">
           <p className="text-zinc-500 text-xs uppercase tracking-wide mb-3">
-            Members · {members?.length ?? 0}
+            {t('group.members')} · {members?.length ?? 0}
           </p>
 
           {isLoading ? (
@@ -223,11 +227,13 @@ export function GroupDetailPage() {
                   <span className="text-sm text-white flex-1">{m.profile.display_name}</span>
                   {m.user_id === group?.owner_id && (
                     <span className="text-[10px] text-amber-500/70 uppercase tracking-wide">
-                      Owner
+                      {t('group.owner')}
                     </span>
                   )}
                   {m.user_id === user?.id && m.user_id !== group?.owner_id && (
-                    <span className="text-[10px] text-zinc-600 uppercase tracking-wide">You</span>
+                    <span className="text-[10px] text-zinc-600 uppercase tracking-wide">
+                      {t('group.you')}
+                    </span>
                   )}
                 </div>
               ))}

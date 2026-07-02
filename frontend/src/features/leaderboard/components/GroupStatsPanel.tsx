@@ -1,15 +1,10 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useGroupTrajectory, type Granularity } from '../hooks/useGroupTrajectory'
 import { PointsTrajectoryChart } from './PointsTrajectoryChart'
 import { ExactCountChart } from './ExactCountChart'
 import type { GlobalLeaderboardRow } from '../services/leaderboardService'
-
-const GRANULARITIES: { key: Granularity; label: string }[] = [
-  { key: 'round', label: 'Round' },
-  { key: 'day', label: 'Day' },
-  { key: 'match', label: 'Match' },
-]
 
 interface Props {
   groupId: string
@@ -18,8 +13,15 @@ interface Props {
 }
 
 export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props) {
+  const { t } = useTranslation()
   const [granularity, setGranularity] = useState<Granularity>('round')
   const { data: trajectoryRows, isLoading } = useGroupTrajectory(groupId, granularity)
+
+  const GRANULARITIES: { key: Granularity; label: string }[] = [
+    { key: 'round', label: t('granularity.round') },
+    { key: 'day', label: t('granularity.day') },
+    { key: 'match', label: t('granularity.match') },
+  ]
 
   const hasExacts = confirmedRows.some((r) => r.exact_count > 0)
 
@@ -29,7 +31,7 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
       <div>
         <div className="flex items-center justify-between mb-3">
           <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
-            Points Trajectory
+            {t('leaderboard.trajectoryTitle')}
           </h3>
           <div className="flex gap-0.5 bg-zinc-900 rounded-full p-0.5">
             {GRANULARITIES.map((g) => (
@@ -55,7 +57,7 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
           <div className="h-[220px] rounded-xl bg-zinc-900 animate-pulse" />
         ) : !trajectoryRows || trajectoryRows.length === 0 ? (
           <div className="h-[220px] rounded-xl bg-zinc-900 flex items-center justify-center">
-            <p className="text-zinc-600 text-sm">No scored predictions yet</p>
+            <p className="text-zinc-600 text-sm">{t('leaderboard.noScoredYet')}</p>
           </div>
         ) : (
           <div className="bg-zinc-900 rounded-xl p-3 pt-4">
@@ -68,13 +70,13 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
       {(hasExacts || confirmedRows.length > 0) && (
         <div>
           <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
-            Exact Scores
+            {t('leaderboard.exactScoresTitle')}
           </h3>
           <div className="bg-zinc-900 rounded-xl p-3 pt-4">
             <ExactCountChart rows={confirmedRows} currentUserId={currentUserId} />
           </div>
           <p className="text-[10px] text-zinc-600 mt-1.5 text-center">
-            Your bar is highlighted in amber
+            {t('leaderboard.yourBarHighlighted')}
           </p>
         </div>
       )}

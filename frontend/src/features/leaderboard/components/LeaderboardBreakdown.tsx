@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { leaderboardService, type BreakdownTier } from '../services/leaderboardService'
 import type { PredictionTier } from '@/types/domain.types'
 import {
-  TIER_LABELS,
+  useTierLabels,
   TIER_TEXT_CLASSES,
   TIER_BADGE_CLASSES,
   TIER_ROW_CLASSES,
@@ -35,6 +36,8 @@ function Flag({ url, name }: { url: string | null; name: string }) {
 }
 
 export function LeaderboardBreakdown({ userId }: Props) {
+  const { t } = useTranslation()
+  const tierLabels = useTierLabels()
   const { data, isLoading } = useQuery({
     queryKey: ['live-breakdown', userId],
     queryFn: () => leaderboardService.getUserLiveBreakdown(userId),
@@ -52,7 +55,11 @@ export function LeaderboardBreakdown({ userId }: Props) {
   }
 
   if (!data || data.length === 0) {
-    return <div className="mt-2 px-3 py-2 text-xs text-zinc-600">No live match predictions</div>
+    return (
+      <div className="mt-2 px-3 py-2 text-xs text-zinc-600">
+        {t('leaderboard.noLivePredictions')}
+      </div>
+    )
   }
 
   return (
@@ -73,14 +80,14 @@ export function LeaderboardBreakdown({ userId }: Props) {
                 <Flag url={row.away_team_flag} name={row.away_team_name} />
               </div>
               <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 rounded px-1.5 py-0.5 flex-shrink-0">
-                LIVE
+                {t('match.live')}
               </span>
             </div>
 
             {/* Prediction + tier */}
             <div className="flex items-center justify-between mt-1.5 gap-2">
               <div className="flex items-center gap-2">
-                <span className="text-[10px] text-zinc-500">Your pick:</span>
+                <span className="text-[10px] text-zinc-500">{t('leaderboard.yourPick')}</span>
                 <span className="text-xs font-semibold text-zinc-200 tabular-nums">
                   {row.pred_home_score}–{row.pred_away_score}
                 </span>
@@ -90,7 +97,7 @@ export function LeaderboardBreakdown({ userId }: Props) {
                     TIER_BADGE_CLASSES[tier]
                   )}
                 >
-                  {TIER_LABELS[tier]}
+                  {tierLabels[tier]}
                 </span>
               </div>
               <span

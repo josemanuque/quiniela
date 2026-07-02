@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Trophy, Star } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyGroups } from '@/features/group/hooks/useMyGroups'
@@ -10,6 +11,7 @@ import { GroupStatsPanel } from './GroupStatsPanel'
 type Tab = 'projected' | 'confirmed'
 
 export function LeaderboardPage() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const { data: myGroups } = useMyGroups()
 
@@ -37,7 +39,7 @@ export function LeaderboardPage() {
     <div className="flex-1 flex flex-col bg-zinc-950 min-h-full pb-14">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center justify-between">
-        <h1 className="text-white font-semibold text-base">Leaderboard</h1>
+        <h1 className="text-white font-semibold text-base">{t('leaderboard.title')}</h1>
       </div>
 
       {/* Scope selector — Global + one chip per group */}
@@ -56,7 +58,7 @@ export function LeaderboardPage() {
                   : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
               )}
             >
-              Global
+              {t('leaderboard.global')}
             </button>
             {myGroups.map((group) => (
               <button
@@ -90,26 +92,26 @@ export function LeaderboardPage() {
       {hasLiveMatches && (
         <div className="flex items-center gap-2 px-4 mt-3 max-w-2xl mx-auto w-full">
           <div className="flex items-center gap-1.5 bg-zinc-900 rounded-full p-0.5 flex-1">
-            {(['projected', 'confirmed'] as Tab[]).map((t) => (
+            {(['projected', 'confirmed'] as Tab[]).map((tabKey) => (
               <button
-                key={t}
+                key={tabKey}
                 onClick={() => {
-                  setTab(t)
+                  setTab(tabKey)
                 }}
                 className={cn(
                   'flex-1 py-1.5 rounded-full text-xs font-medium transition-colors',
-                  activeTab === t
+                  activeTab === tabKey
                     ? 'bg-emerald-600 text-white'
                     : 'text-zinc-400 hover:text-zinc-300'
                 )}
               >
-                {t === 'projected' ? (
+                {tabKey === 'projected' ? (
                   <span className="flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                    Projected
+                    {t('leaderboard.projected')}
                   </span>
                 ) : (
-                  'Confirmed'
+                  t('leaderboard.confirmed')
                 )}
               </button>
             ))}
@@ -123,13 +125,13 @@ export function LeaderboardPage() {
           <span className="w-6" />
           <span className="w-8" />
           <span className="flex-1 text-[10px] text-zinc-600 uppercase tracking-wider font-medium">
-            Player
+            {t('leaderboard.player')}
           </span>
           <span className="text-[10px] text-zinc-600 uppercase tracking-wider font-medium w-9 text-right">
-            Exact
+            {t('leaderboard.exact')}
           </span>
           <span className="text-[10px] text-zinc-600 uppercase tracking-wider font-medium w-8 text-right">
-            Pts
+            {t('leaderboard.pts')}
           </span>
         </div>
       )}
@@ -148,11 +150,11 @@ export function LeaderboardPage() {
               <Trophy size={28} className="text-zinc-500" />
             </div>
             <div className="text-center">
-              <p className="text-white font-medium">No rankings yet</p>
+              <p className="text-white font-medium">{t('leaderboard.noRankings')}</p>
               <p className="text-zinc-500 text-sm mt-1">
                 {scope === 'global'
-                  ? 'Make predictions to appear on the leaderboard'
-                  : 'Group members need predictions on completed matches'}
+                  ? t('leaderboard.makePredictions')
+                  : t('leaderboard.groupNeedsPredictions')}
               </p>
             </div>
           </div>

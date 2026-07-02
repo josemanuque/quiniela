@@ -1,0 +1,169 @@
+{
+  "appTitle": "Quiniela",
+  "appSubtitle": "Copa Mundial FIFA 2026",
+  "nav": {
+    "matches": "Partidos",
+    "groups": "Grupos",
+    "leaderboard": "Tabla",
+    "profile": "Perfil"
+  },
+  "auth": {
+    "continueWithGoogle": "Continuar con Google",
+    "legal": "Al continuar aceptas nuestros términos y política de privacidad.",
+    "signOut": "Cerrar sesión",
+    "accountMenu": "Menú de cuenta"
+  },
+  "match": {
+    "live": "EN VIVO",
+    "ft": "Final",
+    "aet": "AET",
+    "pens": "Pens",
+    "now": "Ahora",
+    "noMatchesToday": "Sin partidos hoy",
+    "browseRounds": "Explora las pestañas de ronda para ver partidos próximos o pasados.",
+    "noMatchesInRound": "Sin partidos en esta ronda.",
+    "tapToSeeAll": "Toca para ver todas las predicciones",
+    "back": "Partidos",
+    "predictionsHidden": "Las predicciones están ocultas hasta el inicio",
+    "everyone": "Todos",
+    "noPredictions": "Sin predicciones para mostrar",
+    "trySwitchingToEveryone": "Intenta cambiar a Todos",
+    "roundsAriaLabel": "Rondas del torneo",
+    "liveIndicator": "en vivo"
+  },
+  "prediction": {
+    "noPrediction": "Sin predicción",
+    "yourPick": "Tu predicción:",
+    "predict": "Predecir",
+    "pts": "pts",
+    "proj": "proy."
+  },
+  "group": {
+    "title": "Grupos",
+    "join": "Unirse",
+    "noGroupsYet": "Aún no hay grupos",
+    "noGroupsDesc": "Crea un grupo o únete con un código de invitación",
+    "joinGroup": "Unirse a grupo",
+    "createGroup": "Crear grupo",
+    "back": "Atrás",
+    "leaveGroup": "Salir del grupo",
+    "stakes": "Apuesta",
+    "editStakes": "Editar apuesta",
+    "stakesPlaceholder": "ej. El último puesto paga la pizza 🍕",
+    "save": "Guardar",
+    "addStakes": "Agrega una apuesta o premio para este grupo…",
+    "inviteCode": "Código de invitación",
+    "copyInviteCode": "Copiar código",
+    "members": "Miembros",
+    "owner": "Dueño",
+    "you": "Tú",
+    "groupCreated": "¡Grupo creado!",
+    "createTitle": "Crear un grupo",
+    "shareCode": "Comparte el código de invitación con tus amigos para que se unan.",
+    "groupName": "Nombre del grupo",
+    "done": "Listo",
+    "creating": "Creando…",
+    "joinTitle": "Unirse a un grupo",
+    "enterCode": "Ingresa el código de invitación",
+    "joined": "¡Unido!",
+    "joining": "Uniéndose…"
+  },
+  "leaderboard": {
+    "title": "Tabla",
+    "global": "Global",
+    "projected": "Proyectado",
+    "confirmed": "Confirmado",
+    "player": "Jugador",
+    "exact": "Exacto",
+    "pts": "Pts",
+    "noRankings": "Sin clasificación aún",
+    "makePredictions": "Haz predicciones para aparecer en la tabla",
+    "groupNeedsPredictions": "Los miembros del grupo necesitan predicciones en partidos completados",
+    "you": "(tú)",
+    "conf": "conf.",
+    "noLivePredictions": "Sin predicciones en vivo",
+    "yourPick": "Tu predicción:",
+    "trajectoryTitle": "Trayectoria de puntos",
+    "exactScoresTitle": "Marcadores exactos",
+    "yourBarHighlighted": "Tu barra está destacada en ámbar",
+    "noScoredYet": "Sin predicciones puntuadas aún",
+    "exactCount_one": "{{count}} exacto",
+    "exactCount_other": "{{count}} exactos"
+  },
+  "profile": {
+    "title": "Perfil",
+    "avatar": "Avatar",
+    "uploading": "Subiendo…",
+    "displayName": "Nombre de usuario",
+    "yourName": "Tu nombre",
+    "saved": "Guardado",
+    "saving": "Guardando…",
+    "save": "Guardar",
+    "myStats": "Mis estadísticas",
+    "totalPoints": "Puntos totales",
+    "globalRank": "Posición global",
+    "predictions": "Predicciones",
+    "accuracy": "Precisión",
+    "correctOutOf": "correctas de",
+    "scoredPredictions": "predicciones puntuadas",
+    "signOut": "Cerrar sesión",
+    "upload": "Subir"
+  },
+  "rules": {
+    "title": "Puntuación",
+    "phase": {
+      "group": "Fase de grupos",
+      "knockout": "Eliminatoria ×2"
+    },
+    "winner": {
+      "home": "Victoria local",
+      "away": "Victoria visitante",
+      "draw": "Empate"
+    },
+    "yourPick": "Tu predicción",
+    "result": "Resultado",
+    "knockoutNote": "Todas las rondas eliminatorias (16vos en adelante) aplican un multiplicador ×2. Mismos niveles, el doble de puntos.",
+    "tiersNote": "Los niveles se evalúan de arriba a abajo: el marcador exacto tiene prioridad sobre las coincidencias parciales.",
+    "tier": {
+      "exact": {
+        "title": "Marcador exacto",
+        "desc": "Predijiste el marcador final exacto para ambos equipos"
+      },
+      "partial_correct": {
+        "title": "Desenlaze correcto con parcial",
+        "desc": "Goles de sólo un equipo coinciden y acertaste el ganador"
+      },
+      "correct_winner": {
+        "title": "Sólo desenlaze correcto",
+        "desc": "Ganador o empate correcto — ningún marcador exacto coincide"
+      },
+      "partial_wrong": {
+        "title": "Parcial sin desenlaze correcto",
+        "desc": "Goles de sólo un equipo coinciden pero predijiste el ganador incorrecto"
+      },
+      "miss": {
+        "title": "Fallo",
+        "desc": "Nada coincide — ganador incorrecto, sin marcadores en común"
+      }
+    }
+  },
+  "scoring": {
+    "title": "Puntuación",
+    "ariaLabel": "Reglas de puntuación",
+    "x2Note": "×2 puntos en rondas eliminatorias",
+    "fullRules": "Reglas completas"
+  },
+  "tier": {
+    "exact": "Exacto",
+    "partial_correct_winner": "Desenlaze + Parcial",
+    "correct_winner": "Desenlaze",
+    "partial_wrong": "Parcial",
+    "miss": "Fallo"
+  },
+  "granularity": {
+    "round": "Jornada",
+    "day": "Día",
+    "match": "Partido"
+  },
+  "language": "Idioma"
+}

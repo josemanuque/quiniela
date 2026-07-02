@@ -1,20 +1,22 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import { Calendar, Users, Trophy, User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 const NAV_ITEMS = [
-  { to: '/app/matches', label: 'Matches', Icon: Calendar },
-  { to: '/app/groups', label: 'Groups', Icon: Users },
-  { to: '/app/leaderboard', label: 'Leaderboard', Icon: Trophy },
-  { to: '/app/profile', label: 'Profile', Icon: User },
-] as const
+  { to: '/app/matches' as const, labelKey: 'nav.matches', Icon: Calendar },
+  { to: '/app/groups' as const, labelKey: 'nav.groups', Icon: Users },
+  { to: '/app/leaderboard' as const, labelKey: 'nav.leaderboard', Icon: Trophy },
+  { to: '/app/profile' as const, labelKey: 'nav.profile', Icon: User },
+]
 
 export function BottomNav() {
+  const { t } = useTranslation()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-zinc-950/95 backdrop-blur border-t border-zinc-800 h-16 flex">
-      {NAV_ITEMS.map(({ to, label, Icon }) => {
+      {NAV_ITEMS.map(({ to, labelKey, Icon }) => {
         const isActive = pathname.startsWith(to)
 
         return (
@@ -27,7 +29,7 @@ export function BottomNav() {
             )}
           >
             <Icon size={22} />
-            <span className="text-xs">{label}</span>
+            <span className="text-xs">{t(labelKey)}</span>
           </Link>
         )
       })}

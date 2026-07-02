@@ -1,15 +1,15 @@
 import { useState } from 'react'
 import { useRouter } from '@tanstack/react-router'
 import { ArrowLeft, Star, CheckCheck, Check, Minus, X, Zap } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
 type Phase = 'group' | 'knockout'
+type WinnerKey = 'home' | 'away' | 'draw'
 
 interface Tier {
   id: string
   Icon: React.ElementType
-  title: string
-  desc: string
   pickHome: number
   pickAway: number
   resultHome: number
@@ -24,8 +24,6 @@ const TIERS: Tier[] = [
   {
     id: 'exact',
     Icon: Star,
-    title: 'Exact Score',
-    desc: 'Predicted the exact final score for both teams',
     pickHome: 2,
     pickAway: 0,
     resultHome: RESULT.home,
@@ -42,8 +40,6 @@ const TIERS: Tier[] = [
   {
     id: 'partial_correct',
     Icon: CheckCheck,
-    title: 'Partial + Win',
-    desc: 'One score matches and picked the right winner',
     pickHome: 2,
     pickAway: 1,
     resultHome: RESULT.home,
@@ -60,8 +56,6 @@ const TIERS: Tier[] = [
   {
     id: 'correct_winner',
     Icon: Check,
-    title: 'Correct Winner',
-    desc: 'Right winner or draw — no exact scores match',
     pickHome: 3,
     pickAway: 1,
     resultHome: RESULT.home,
@@ -78,8 +72,6 @@ const TIERS: Tier[] = [
   {
     id: 'partial_wrong',
     Icon: Minus,
-    title: 'Partial + Loss',
-    desc: 'One score matches but predicted the wrong winner',
     pickHome: 0,
     pickAway: 0,
     resultHome: RESULT.home,
@@ -96,8 +88,6 @@ const TIERS: Tier[] = [
   {
     id: 'miss',
     Icon: X,
-    title: 'Miss',
-    desc: 'Nothing matches — wrong winner, no scores in common',
     pickHome: 1,
     pickAway: 2,
     resultHome: RESULT.home,
@@ -113,10 +103,10 @@ const TIERS: Tier[] = [
   },
 ]
 
-function winnerLabel(home: number, away: number): string {
-  if (home > away) return 'Home wins'
-  if (away > home) return 'Away wins'
-  return 'Draw'
+function winnerKey(home: number, away: number): WinnerKey {
+  if (home > away) return 'home'
+  if (away > home) return 'away'
+  return 'draw'
 }
 
 function ScoreBox({
@@ -141,13 +131,17 @@ function ScoreBox({
 }
 
 function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
-  const { Icon, title, desc, pickHome, pickAway, resultHome, resultAway, groupPts, accent } = tier
+  const { t } = useTranslation()
+  const { Icon, id, pickHome, pickAway, resultHome, resultAway, groupPts, accent } = tier
   const pts = groupPts * multiplier
   const homeMatch = pickHome === resultHome
   const awayMatch = pickAway === resultAway
-  const pickWinner = winnerLabel(pickHome, pickAway)
-  const resultWinner = winnerLabel(resultHome, resultAway)
-  const winnerMatch = pickWinner === resultWinner
+  const pickKey = winnerKey(pickHome, pickAway)
+  const resultKey = winnerKey(resultHome, resultAway)
+  const winnerMatch = pickKey === resultKey
+
+  const title = t(`rules.tier.${id}.title`)
+  const desc = t(`rules.tier.${id}.desc`)
 
   return (
     <div className={cn('rounded-xl border-l-4 overflow-hidden', accent.border, accent.bg)}>
@@ -174,7 +168,9 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
         <div className="mt-3.5 flex items-center gap-5 ml-[26px]">
           {/* Pick */}
           <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Your Pick</span>
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">
+              {t('rules.yourPick')}
+            </span>
             <div className="flex items-center gap-1.5">
               <ScoreBox value={pickHome} highlight={homeMatch} scoreBg={accent.scoreBg} />
               <span className="text-zinc-600 text-sm font-medium">–</span>
@@ -183,7 +179,7 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
             <span
               className={cn('text-[10px] font-medium', winnerMatch ? accent.text : 'text-zinc-600')}
             >
-              {pickWinner}
+              {t(`rules.winner.${pickKey}`)}
             </span>
           </div>
 
@@ -191,7 +187,9 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
 
           {/* Result */}
           <div className="flex flex-col items-center gap-1.5">
-            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">Result</span>
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider">
+              {t('rules.result')}
+            </span>
             <div className="flex items-center gap-1.5">
               <span className="w-9 h-9 rounded-lg flex items-center justify-center text-base font-bold tabular-nums bg-zinc-800/60 text-zinc-300">
                 {resultHome}
@@ -201,7 +199,7 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
                 {resultAway}
               </span>
             </div>
-            <span className="text-[10px] text-zinc-500">{resultWinner}</span>
+            <span className="text-[10px] text-zinc-500">{t(`rules.winner.${resultKey}`)}</span>
           </div>
         </div>
       </div>
@@ -210,6 +208,7 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
 }
 
 export function RulesPage() {
+  const { t } = useTranslation()
   const router = useRouter()
   const [phase, setPhase] = useState<Phase>('group')
   const multiplier = phase === 'group' ? 1 : 2
@@ -226,7 +225,7 @@ export function RulesPage() {
         >
           <ArrowLeft size={18} />
         </button>
-        <h1 className="text-white font-semibold text-base">Scoring Rules</h1>
+        <h1 className="text-white font-semibold text-base">{t('rules.title')}</h1>
       </div>
 
       <div className="flex-1 px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
@@ -244,7 +243,7 @@ export function RulesPage() {
               )}
             >
               {p === 'knockout' && <Zap size={11} className="text-amber-400" />}
-              {p === 'group' ? 'Group Stage' : 'Knockout ×2'}
+              {t(`rules.phase.${p}`)}
             </button>
           ))}
         </div>
@@ -252,11 +251,7 @@ export function RulesPage() {
         {phase === 'knockout' && (
           <div className="flex items-start gap-2.5 bg-amber-500/8 border border-amber-500/20 rounded-lg px-3 py-2.5">
             <Zap size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
-            <p className="text-xs text-amber-300/80">
-              All knockout rounds (R32 onward) apply a{' '}
-              <span className="font-semibold text-amber-300">×2 multiplier</span>. Same tiers,
-              double the points.
-            </p>
+            <p className="text-xs text-amber-300/80">{t('rules.knockoutNote')}</p>
           </div>
         )}
 
@@ -266,9 +261,7 @@ export function RulesPage() {
         ))}
 
         {/* Footer note */}
-        <p className="text-[11px] text-zinc-600 text-center pb-2">
-          Tiers are evaluated top-down — exact score takes precedence over partial matches.
-        </p>
+        <p className="text-[11px] text-zinc-600 text-center pb-2">{t('rules.tiersNote')}</p>
       </div>
     </div>
   )

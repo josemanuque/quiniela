@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Check, LogOut, Star, Trophy, Target, Percent, Upload } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useProfile } from '@/features/auth/hooks/useProfile'
@@ -31,6 +32,7 @@ function StatCard({
 }
 
 export function ProfilePage() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const { data: profile } = useProfile()
   const { data: stats } = useMyStats()
@@ -75,7 +77,7 @@ export function ProfilePage() {
     <div className="flex flex-col min-h-full bg-zinc-950">
       {/* Header */}
       <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3">
-        <h1 className="text-white font-semibold text-base">Profile</h1>
+        <h1 className="text-white font-semibold text-base">{t('profile.title')}</h1>
       </div>
 
       <div className="flex-1 px-4 py-6 space-y-6 max-w-lg mx-auto w-full">
@@ -104,12 +106,12 @@ export function ProfilePage() {
         {/* Avatar picker */}
         <section>
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-            Avatar
+            {t('profile.avatar')}
           </h2>
           {isUploading && (
             <div className="flex items-center gap-2 text-xs text-zinc-400 mb-2">
               <Upload size={12} className="animate-bounce" />
-              Uploading…
+              {t('profile.uploading')}
             </div>
           )}
           {user && (
@@ -131,7 +133,7 @@ export function ProfilePage() {
         {/* Display name */}
         <section>
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-            Display Name
+            {t('profile.displayName')}
           </h2>
           <div className="flex gap-2">
             <input
@@ -141,7 +143,7 @@ export function ProfilePage() {
                 setDisplayName(e.target.value)
               }}
               maxLength={50}
-              placeholder="Your name"
+              placeholder={t('profile.yourName')}
               className="flex-1 h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-emerald-500 transition-colors"
             />
             <button
@@ -159,12 +161,12 @@ export function ProfilePage() {
               {isSuccess && !nameChanged ? (
                 <>
                   <Check size={13} />
-                  Saved
+                  {t('profile.saved')}
                 </>
               ) : isPending ? (
-                'Saving…'
+                t('profile.saving')
               ) : (
-                'Save'
+                t('profile.save')
               )}
             </button>
           </div>
@@ -174,38 +176,38 @@ export function ProfilePage() {
         {/* Stats */}
         <section>
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
-            My Stats
+            {t('profile.myStats')}
           </h2>
           <div className="grid grid-cols-2 gap-2.5">
             <StatCard
               icon={Star}
-              label="Total Points"
+              label={t('profile.totalPoints')}
               value={stats ? String(stats.total_points) : '—'}
               accent="text-amber-400"
             />
             <StatCard
               icon={Trophy}
-              label="Global Rank"
+              label={t('profile.globalRank')}
               value={stats?.global_rank ? `#${stats.global_rank.toString()}` : '—'}
               accent="text-yellow-400"
             />
             <StatCard
               icon={Target}
-              label="Predictions"
+              label={t('profile.predictions')}
               value={stats ? String(stats.predictions_made) : '—'}
               accent="text-sky-400"
             />
             <StatCard
               icon={Percent}
-              label="Accuracy"
+              label={t('profile.accuracy')}
               value={accuracy !== null ? `${accuracy.toString()}%` : '—'}
               accent="text-emerald-400"
             />
           </div>
           {stats && stats.scored_predictions > 0 && (
             <p className="text-xs text-zinc-600 mt-2 text-center">
-              {stats.correct_predictions} correct out of {stats.scored_predictions} scored
-              predictions
+              {stats.correct_predictions} {t('profile.correctOutOf')} {stats.scored_predictions}{' '}
+              {t('profile.scoredPredictions')}
             </p>
           )}
         </section>
@@ -220,7 +222,7 @@ export function ProfilePage() {
               className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border border-red-900/50 text-red-400 hover:bg-red-900/20 transition-colors text-sm font-medium"
             >
               <LogOut size={15} />
-              Sign Out
+              {t('profile.signOut')}
             </button>
           </div>
         </section>

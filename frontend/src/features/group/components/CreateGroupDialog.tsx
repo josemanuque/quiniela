@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -13,6 +14,7 @@ interface Props {
 }
 
 export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) {
+  const { t } = useTranslation()
   const [name, setName] = useState('')
   const [created, setCreated] = useState<GroupWithMemberCount | null>(null)
   const [copied, setCopied] = useState(false)
@@ -57,15 +59,13 @@ export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) 
       <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-sm mx-auto">
         <DialogHeader>
           <DialogTitle className="text-white">
-            {created ? 'Group created!' : 'Create a group'}
+            {created ? t('group.groupCreated') : t('group.createTitle')}
           </DialogTitle>
         </DialogHeader>
 
         {created ? (
           <div className="space-y-4">
-            <p className="text-zinc-400 text-sm">
-              Share the invite code with friends so they can join.
-            </p>
+            <p className="text-zinc-400 text-sm">{t('group.shareCode')}</p>
             <div className="flex items-center gap-2 bg-zinc-800 rounded-lg px-4 py-3">
               <span className="flex-1 text-lg font-mono font-bold tracking-widest text-emerald-400">
                 {created.invite_code}
@@ -73,19 +73,19 @@ export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) 
               <button
                 onClick={handleCopy}
                 className="text-zinc-400 hover:text-white transition-colors"
-                aria-label="Copy invite code"
+                aria-label={t('group.copyInviteCode')}
               >
                 {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
               </button>
             </div>
             <Button onClick={handleClose} className="w-full">
-              Done
+              {t('group.done')}
             </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
-              placeholder="Group name"
+              placeholder={t('group.groupName')}
               value={name}
               onChange={(e) => {
                 setName(e.target.value)
@@ -96,7 +96,7 @@ export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) 
             />
             {error && <p className="text-red-400 text-sm">{error.message}</p>}
             <Button type="submit" disabled={!name.trim() || isPending} className="w-full">
-              {isPending ? 'Creating…' : 'Create group'}
+              {isPending ? t('group.creating') : t('group.createGroup')}
             </Button>
           </form>
         )}

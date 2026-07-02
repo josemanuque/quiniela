@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Lock, Check } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { MatchWithTeams, PredictionTier } from '@/types/domain.types'
 import { isMatchEditable } from '@/features/match/utils/matchUtils'
@@ -23,6 +24,7 @@ const INPUT_CLASS =
   '[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
 
 export function PredictionInput({ match }: Props) {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const editable = isMatchEditable(match.kickoff_at)
 
@@ -49,7 +51,7 @@ export function PredictionInput({ match }: Props) {
       return (
         <div className="flex items-center justify-center gap-1 mt-2.5 text-zinc-600">
           <Lock size={12} />
-          <span className="text-xs">No prediction</span>
+          <span className="text-xs">{t('prediction.noPrediction')}</span>
         </div>
       )
     }
@@ -81,16 +83,19 @@ export function PredictionInput({ match }: Props) {
     return (
       <div className="text-center mt-2.5">
         <span className="text-xs text-zinc-500">
-          Your pick:{' '}
+          {t('prediction.yourPick')}{' '}
           <span className="text-zinc-300 font-semibold tabular-nums">
             {prediction.home_score} – {prediction.away_score}
           </span>
           {prediction.points_earned !== null ? (
             <span className={cn('ml-2 font-semibold', ptsClass)}>
-              +{prediction.points_earned}pts
+              +{prediction.points_earned}
+              {t('prediction.pts')}
             </span>
           ) : projTier !== null && projPts !== null ? (
-            <span className={cn('ml-2 font-semibold', ptsClass)}>+{projPts} proj</span>
+            <span className={cn('ml-2 font-semibold', ptsClass)}>
+              +{projPts} {t('prediction.proj')}
+            </span>
           ) : null}
         </span>
       </div>
@@ -106,7 +111,9 @@ export function PredictionInput({ match }: Props) {
 
   return (
     <div className="relative flex items-center justify-center mt-3">
-      <span className="absolute left-0 text-xs text-zinc-600 uppercase tracking-wide">Predict</span>
+      <span className="absolute left-0 text-xs text-zinc-600 uppercase tracking-wide">
+        {t('prediction.predict')}
+      </span>
       <div className="flex items-center gap-2">
         <input
           type="number"

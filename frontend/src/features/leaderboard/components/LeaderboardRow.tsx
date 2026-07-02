@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { ChevronDown, Star } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LeaderboardBreakdown } from './LeaderboardBreakdown'
@@ -44,6 +45,7 @@ export function LeaderboardRow({
   showSub,
   expandable,
 }: Props) {
+  const { t } = useTranslation()
   const [expanded, setExpanded] = useState(false)
 
   return (
@@ -106,7 +108,9 @@ export function LeaderboardRow({
           )}
         >
           {displayName}
-          {isCurrentUser && <span className="ml-1.5 text-[10px] text-zinc-500">(you)</span>}
+          {isCurrentUser && (
+            <span className="ml-1.5 text-[10px] text-zinc-500">{t('leaderboard.you')}</span>
+          )}
         </span>
 
         {/* Exact count */}
@@ -141,7 +145,9 @@ export function LeaderboardRow({
               {points}
             </span>
             {showSub && subPoints !== undefined && subPoints !== points && (
-              <div className="text-[10px] text-zinc-600 tabular-nums">{subPoints} conf.</div>
+              <div className="text-[10px] text-zinc-600 tabular-nums">
+                {subPoints} {t('leaderboard.conf')}
+              </div>
             )}
           </div>
           {expandable && (

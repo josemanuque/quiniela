@@ -1,30 +1,32 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 import { Calendar, Users, Trophy, User } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useProfile } from '@features/auth/hooks/useProfile'
 import { ScoringRulesPopover } from '@/components/ScoringRulesPopover'
 import { ProfileMenu } from '@/components/ProfileMenu'
 
 const NAV_ITEMS = [
-  { to: '/app/matches', label: 'Matches', Icon: Calendar },
-  { to: '/app/groups', label: 'Groups', Icon: Users },
-  { to: '/app/leaderboard', label: 'Leaderboard', Icon: Trophy },
-  { to: '/app/profile', label: 'Profile', Icon: User },
-] as const
+  { to: '/app/matches' as const, labelKey: 'nav.matches', Icon: Calendar },
+  { to: '/app/groups' as const, labelKey: 'nav.groups', Icon: Users },
+  { to: '/app/leaderboard' as const, labelKey: 'nav.leaderboard', Icon: Trophy },
+  { to: '/app/profile' as const, labelKey: 'nav.profile', Icon: User },
+]
 
 export function DesktopSidebar() {
   const { data: profile } = useProfile()
+  const { t } = useTranslation()
   const pathname = useRouterState({ select: (s) => s.location.pathname })
 
   return (
     <aside className="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-60 bg-zinc-950 border-r border-zinc-800 z-40">
       <div className="h-16 flex items-center justify-between px-6 border-b border-zinc-800 flex-shrink-0">
-        <span className="text-white font-bold text-lg tracking-tight">Quiniela 2026</span>
+        <span className="text-white font-bold text-lg tracking-tight">{t('appTitle')} 2026</span>
         <ScoringRulesPopover align="start" />
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.map(({ to, label, Icon }) => {
+        {NAV_ITEMS.map(({ to, labelKey, Icon }) => {
           const isActive = pathname.startsWith(to)
 
           return (
@@ -39,7 +41,7 @@ export function DesktopSidebar() {
               )}
             >
               <Icon size={18} />
-              <span className="text-sm font-medium">{label}</span>
+              <span className="text-sm font-medium">{t(labelKey)}</span>
             </Link>
           )
         })}

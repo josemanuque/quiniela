@@ -1,0 +1,163 @@
+{
+  "appTitle": "Quiniela",
+  "appSubtitle": "FIFA World Cup 2026",
+  "nav": {
+    "matches": "Matches",
+    "groups": "Groups",
+    "leaderboard": "Leaderboard",
+    "profile": "Profile"
+  },
+  "auth": {
+    "continueWithGoogle": "Continue with Google",
+    "legal": "By continuing you accept our terms and privacy policy.",
+    "signOut": "Sign Out",
+    "accountMenu": "Account menu"
+  },
+  "match": {
+    "live": "LIVE",
+    "ft": "FT",
+    "aet": "AET",
+    "pens": "Pens",
+    "now": "Now",
+    "noMatchesToday": "No matches today",
+    "browseRounds": "Browse the round tabs above to see upcoming or past matches.",
+    "noMatchesInRound": "No matches in this round.",
+    "tapToSeeAll": "Tap to see all predictions",
+    "back": "Matches",
+    "predictionsHidden": "Predictions are hidden until kickoff",
+    "everyone": "Everyone",
+    "noPredictions": "No predictions to show",
+    "trySwitchingToEveryone": "Try switching to Everyone",
+    "roundsAriaLabel": "Tournament rounds",
+    "liveIndicator": "live"
+  },
+  "prediction": {
+    "noPrediction": "No prediction",
+    "yourPick": "Your pick:",
+    "predict": "Predict",
+    "pts": "pts",
+    "proj": "proj"
+  },
+  "group": {
+    "title": "Groups",
+    "join": "Join",
+    "noGroupsYet": "No groups yet",
+    "noGroupsDesc": "Create a group or join one with an invite code",
+    "joinGroup": "Join group",
+    "createGroup": "Create group",
+    "back": "Back",
+    "leaveGroup": "Leave group",
+    "stakes": "Stakes",
+    "editStakes": "Edit stakes",
+    "stakesPlaceholder": "e.g. Last place buys pizza 🍕",
+    "save": "Save",
+    "addStakes": "Add stakes or prize for this group…",
+    "inviteCode": "Invite code",
+    "copyInviteCode": "Copy invite code",
+    "members": "Members",
+    "owner": "Owner",
+    "you": "You",
+    "groupCreated": "Group created!",
+    "createTitle": "Create a group",
+    "shareCode": "Share the invite code with friends so they can join.",
+    "groupName": "Group name",
+    "done": "Done",
+    "creating": "Creating…",
+    "joinTitle": "Join a group",
+    "enterCode": "Enter invite code",
+    "joined": "Joined!",
+    "joining": "Joining…"
+  },
+  "leaderboard": {
+    "title": "Leaderboard",
+    "global": "Global",
+    "projected": "Projected",
+    "confirmed": "Confirmed",
+    "player": "Player",
+    "exact": "Exact",
+    "pts": "Pts",
+    "noRankings": "No rankings yet",
+    "makePredictions": "Make predictions to appear on the leaderboard",
+    "groupNeedsPredictions": "Group members need predictions on completed matches",
+    "you": "(you)",
+    "conf": "conf.",
+    "noLivePredictions": "No live match predictions",
+    "yourPick": "Your pick:",
+    "trajectoryTitle": "Points Trajectory",
+    "exactScoresTitle": "Exact Scores",
+    "yourBarHighlighted": "Your bar is highlighted in amber",
+    "noScoredYet": "No scored predictions yet",
+    "exactCount_one": "{{count}} exact",
+    "exactCount_other": "{{count}} exacts"
+  },
+  "profile": {
+    "title": "Profile",
+    "avatar": "Avatar",
+    "uploading": "Uploading…",
+    "displayName": "Display Name",
+    "yourName": "Your name",
+    "saved": "Saved",
+    "saving": "Saving…",
+    "save": "Save",
+    "myStats": "My Stats",
+    "totalPoints": "Total Points",
+    "globalRank": "Global Rank",
+    "predictions": "Predictions",
+    "accuracy": "Accuracy",
+    "correctOutOf": "correct out of",
+    "scoredPredictions": "scored predictions",
+    "signOut": "Sign Out",
+    "upload": "Upload"
+  },
+  "rules": {
+    "title": "Scoring Rules",
+    "phase": {
+      "group": "Group Stage",
+      "knockout": "Knockout ×2"
+    },
+    "winner": {
+      "home": "Home wins",
+      "away": "Away wins",
+      "draw": "Draw"
+    },
+    "yourPick": "Your Pick",
+    "result": "Result",
+    "knockoutNote": "All knockout rounds (R32 onward) apply a ×2 multiplier. Same tiers, double the points.",
+    "tiersNote": "Tiers are evaluated top-down — exact score takes precedence over partial matches.",
+    "tier": {
+      "exact": { "title": "Exact Score", "desc": "Predicted the exact final score for both teams" },
+      "partial_correct": {
+        "title": "Partial + Win",
+        "desc": "One score matches and picked the right winner"
+      },
+      "correct_winner": {
+        "title": "Correct Winner",
+        "desc": "Right winner or draw — no exact scores match"
+      },
+      "partial_wrong": {
+        "title": "Partial + Loss",
+        "desc": "One score matches but predicted the wrong winner"
+      },
+      "miss": { "title": "Miss", "desc": "Nothing matches — wrong winner, no scores in common" }
+    }
+  },
+  "scoring": {
+    "title": "Scoring Rules",
+    "ariaLabel": "Scoring rules",
+    "x2Note": "×2 points in knockout rounds",
+    "fullRules": "Full scoring rules"
+  },
+  "tier": {
+    "exact": "Exact",
+    "partial_correct_winner": "Partial + Win",
+    "correct_winner": "Correct Winner",
+    "partial_wrong": "Partial + Loss",
+    "miss": "Miss"
+  },
+  "granularity": {
+    "round": "Round",
+    "day": "Day",
+    "match": "Match"
+  },
+  "language": "Language"
+}

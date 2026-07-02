@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export function JoinGroupDialog({ open, onOpenChange }: Props) {
+  const { t } = useTranslation()
   const [code, setCode] = useState('')
   const { mutate: join, isPending, error, isSuccess } = useJoinGroup()
 
@@ -38,12 +40,12 @@ export function JoinGroupDialog({ open, onOpenChange }: Props) {
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="bg-zinc-900 border-zinc-800 text-white max-w-sm mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-white">Join a group</DialogTitle>
+          <DialogTitle className="text-white">{t('group.joinTitle')}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <Input
-            placeholder="Enter invite code"
+            placeholder={t('group.enterCode')}
             value={code}
             onChange={(e) => {
               setCode(e.target.value.toUpperCase())
@@ -53,9 +55,9 @@ export function JoinGroupDialog({ open, onOpenChange }: Props) {
             maxLength={8}
           />
           {error && <p className="text-red-400 text-sm">{error.message}</p>}
-          {isSuccess && <p className="text-emerald-400 text-sm text-center">Joined!</p>}
+          {isSuccess && <p className="text-emerald-400 text-sm text-center">{t('group.joined')}</p>}
           <Button type="submit" disabled={code.length < 6 || isPending} className="w-full">
-            {isPending ? 'Joining…' : 'Join group'}
+            {isPending ? t('group.joining') : t('group.joinGroup')}
           </Button>
         </form>
       </DialogContent>

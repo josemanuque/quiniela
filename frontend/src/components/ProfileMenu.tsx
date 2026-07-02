@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
-import { LogOut } from 'lucide-react'
+import { LogOut, Languages } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { useProfile } from '@features/auth/hooks/useProfile'
@@ -14,6 +15,7 @@ interface Props {
 export function ProfileMenu({ children, align = 'end' }: Props) {
   const { data: profile } = useProfile()
   const { user } = useAuth()
+  const { t, i18n } = useTranslation()
 
   function initials(name: string) {
     return name
@@ -23,6 +25,14 @@ export function ProfileMenu({ children, align = 'end' }: Props) {
       .join('')
       .toUpperCase()
   }
+
+  function toggleLanguage() {
+    const next = i18n.language.startsWith('es') ? 'en' : 'es'
+    localStorage.setItem('quiniela-lang', next)
+    void i18n.changeLanguage(next)
+  }
+
+  const currentLang = i18n.language.startsWith('es') ? 'ES' : 'EN'
 
   return (
     <Popover>
@@ -50,13 +60,24 @@ export function ProfileMenu({ children, align = 'end' }: Props) {
         {/* Actions */}
         <div className="p-1">
           <button
+            onClick={toggleLanguage}
+            className="w-full flex items-center justify-between gap-2.5 px-3 py-2 rounded-md text-sm text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 transition-colors"
+          >
+            <div className="flex items-center gap-2.5">
+              <Languages size={14} />
+              {t('language')}
+            </div>
+            <span className="text-xs font-bold tracking-wide text-zinc-300">{currentLang}</span>
+          </button>
+
+          <button
             onClick={() => {
               void authService.signOut()
             }}
             className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-red-400 hover:bg-red-900/20 transition-colors"
           >
             <LogOut size={14} />
-            Sign Out
+            {t('auth.signOut')}
           </button>
         </div>
       </PopoverContent>

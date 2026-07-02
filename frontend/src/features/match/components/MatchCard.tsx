@@ -1,4 +1,5 @@
 import { useNavigate } from '@tanstack/react-router'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { MatchWithTeams, PredictionTier } from '@/types/domain.types'
 import { formatKickoffDate, formatKickoffTime } from '../utils/matchUtils'
@@ -9,6 +10,8 @@ import { TIER_BORDER_CLASSES } from '@/features/prediction/utils/tierUtils'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 function ScoreOrTime({ match }: { match: MatchWithTeams }) {
+  const { t } = useTranslation()
+
   if (match.status === 'live') {
     return (
       <div className="text-center min-w-[88px]">
@@ -17,7 +20,9 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
         </span>
         <div className="flex items-center justify-center gap-1 mt-0.5">
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-emerald-400 text-xs font-semibold tracking-wide">LIVE</span>
+          <span className="text-emerald-400 text-xs font-semibold tracking-wide">
+            {t('match.live')}
+          </span>
         </div>
       </div>
     )
@@ -32,13 +37,13 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
         </span>
         {hasPens ? (
           <div className="flex flex-col items-center mt-0.5">
-            <span className="text-zinc-600 text-[10px]">AET</span>
+            <span className="text-zinc-600 text-[10px]">{t('match.aet')}</span>
             <span className="text-zinc-400 text-xs font-semibold tabular-nums">
-              Pen {match.home_penalties}–{match.away_penalties}
+              {t('match.pens')} {match.home_penalties}–{match.away_penalties}
             </span>
           </div>
         ) : (
-          <div className="text-zinc-600 text-xs mt-0.5">FT</div>
+          <div className="text-zinc-600 text-xs mt-0.5">{t('match.ft')}</div>
         )}
       </div>
     )
@@ -55,6 +60,7 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
 
 export function MatchCard({ match }: { match: MatchWithTeams }) {
   const navigate = useNavigate()
+  const { t } = useTranslation()
   const { data: prediction } = useMyPrediction(match.id)
 
   const isClickable = match.status !== 'upcoming'
@@ -117,7 +123,7 @@ export function MatchCard({ match }: { match: MatchWithTeams }) {
     <Tooltip>
       <TooltipTrigger asChild>{card}</TooltipTrigger>
       <TooltipContent side="top" className="bg-zinc-800 border-zinc-700 text-zinc-200 text-xs">
-        Tap to see all predictions
+        {t('match.tapToSeeAll')}
       </TooltipContent>
     </Tooltip>
   )

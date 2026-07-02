@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useParams, Link } from '@tanstack/react-router'
 import { ChevronLeft, Lock } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { PredictionTier, PredictionWithProfile } from '@/types/domain.types'
 import { useAuth } from '@/features/auth/hooks/useAuth'
@@ -12,7 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { TeamFlag } from './TeamFlag'
 import { formatKickoffDate } from '../utils/matchUtils'
 import {
-  TIER_LABELS,
+  useTierLabels,
   TIER_BADGE_CLASSES,
   TIER_TEXT_CLASSES,
   computeLiveTier,
@@ -22,6 +23,7 @@ import {
 // ---------------------------------------------------------------------------
 
 function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>['data']> }) {
+  const { t } = useTranslation()
   const hasPens = (match as Record<string, unknown>).home_penalties != null
   const hp = (match as Record<string, unknown>).home_penalties as number | null
   const ap = (match as Record<string, unknown>).away_penalties as number | null
@@ -46,7 +48,7 @@ function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>
               </span>
               <div className="flex items-center gap-1 mt-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-emerald-400 text-xs font-semibold">LIVE</span>
+                <span className="text-emerald-400 text-xs font-semibold">{t('match.live')}</span>
               </div>
             </>
           ) : match.status === 'completed' ? (
@@ -56,13 +58,13 @@ function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>
               </span>
               {hasPens ? (
                 <div className="flex flex-col items-center mt-1">
-                  <span className="text-[10px] text-zinc-500">Pens</span>
+                  <span className="text-[10px] text-zinc-500">{t('match.pens')}</span>
                   <span className="text-sm font-semibold text-zinc-400 tabular-nums">
                     {hp} – {ap}
                   </span>
                 </div>
               ) : (
-                <span className="text-xs text-zinc-500 mt-1">FT</span>
+                <span className="text-xs text-zinc-500 mt-1">{t('match.ft')}</span>
               )}
             </>
           ) : (
@@ -86,11 +88,12 @@ function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>
 }
 
 function TierBadge({ tier }: { tier: PredictionTier }) {
+  const tierLabels = useTierLabels()
   return (
     <span
       className={cn('text-[10px] font-semibold px-1.5 py-0.5 rounded', TIER_BADGE_CLASSES[tier])}
     >
-      {TIER_LABELS[tier]}
+      {tierLabels[tier]}
     </span>
   )
 }
@@ -112,6 +115,7 @@ interface PredictionRowProps {
 }
 
 function PredictionRow({ pred, isMe, liveScore, isLive }: PredictionRowProps) {
+  const { t } = useTranslation()
   const name = pred.profile.display_name
   const avatar = pred.profile.avatar_url
 
@@ -149,7 +153,7 @@ function PredictionRow({ pred, isMe, liveScore, isLive }: PredictionRowProps) {
         className={cn('flex-1 text-sm truncate', isMe ? 'text-white font-medium' : 'text-zinc-300')}
       >
         {name}
-        {isMe && <span className="ml-1 text-[10px] text-zinc-500">(you)</span>}
+        {isMe && <span className="ml-1 text-[10px] text-zinc-500">{t('leaderboard.you')}</span>}
       </span>
 
       {/* Pick */}
@@ -176,7 +180,9 @@ function PredictionRow({ pred, isMe, liveScore, isLive }: PredictionRowProps) {
               +{displayPts}
             </span>
           ) : isLive ? (
-            <span className="text-[10px] text-zinc-600 w-8 text-right">live</span>
+            <span className="text-[10px] text-zinc-600 w-8 text-right">
+              {t('match.liveIndicator')}
+            </span>
           ) : null}
         </div>
       )}
@@ -192,6 +198,7 @@ const ALL_SCOPE = 'all'
 
 export function MatchDetailPage() {
   const { matchId } = useParams({ from: '/app/matches/$matchId' })
+  const { t } = useTranslation()
   const { user } = useAuth()
 
   const { data: match } = useMatch(matchId)
@@ -237,7 +244,7 @@ export function MatchDetailPage() {
           className="flex items-center gap-1 text-zinc-500 hover:text-zinc-300 transition-colors text-sm"
         >
           <ChevronLeft size={16} />
-          Matches
+          {t('match.back')}
         </Link>
       </div>
 
@@ -250,7 +257,7 @@ export function MatchDetailPage() {
           <div className="bg-zinc-800 rounded-full p-4">
             <Lock size={20} className="text-zinc-500" />
           </div>
-          <p className="text-zinc-400 text-sm text-center">Predictions are hidden until kickoff</p>
+          <p className="text-zinc-400 text-sm text-center">{t('match.predictionsHidden')}</p>
         </div>
       )}
 
@@ -270,7 +277,7 @@ export function MatchDetailPage() {
                     : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
                 )}
               >
-                Everyone
+                {t('match.everyone')}
               </button>
               {myGroups.map((g) => (
                 <button
@@ -301,9 +308,9 @@ export function MatchDetailPage() {
               </div>
             ) : sorted.length === 0 ? (
               <div className="flex flex-col items-center py-12 gap-2">
-                <p className="text-zinc-500 text-sm">No predictions to show</p>
+                <p className="text-zinc-500 text-sm">{t('match.noPredictions')}</p>
                 {scope !== ALL_SCOPE && (
-                  <p className="text-zinc-600 text-xs">Try switching to Everyone</p>
+                  <p className="text-zinc-600 text-xs">{t('match.trySwitchingToEveryone')}</p>
                 )}
               </div>
             ) : (
