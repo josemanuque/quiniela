@@ -23,17 +23,22 @@ function ScoreOrTime({ match }: { match: MatchWithTeams }) {
   }
 
   if (match.status === 'completed') {
-    const hasPens = (match as MatchWithTeams & { home_penalties?: number | null }).home_penalties != null
-    const hp = (match as MatchWithTeams & { home_penalties?: number | null }).home_penalties
-    const ap = (match as MatchWithTeams & { away_penalties?: number | null }).away_penalties
+    const hasPens = match.home_penalties != null
     return (
       <div className="text-center min-w-[88px]">
         <span className="text-white font-bold text-2xl tabular-nums">
           {match.home_score} – {match.away_score}
         </span>
-        <div className="text-zinc-600 text-xs mt-0.5">
-          {hasPens ? `Pen ${hp}–${ap}` : 'FT'}
-        </div>
+        {hasPens ? (
+          <div className="flex flex-col items-center mt-0.5">
+            <span className="text-zinc-600 text-[10px]">AET</span>
+            <span className="text-zinc-400 text-xs font-semibold tabular-nums">
+              Pen {match.home_penalties}–{match.away_penalties}
+            </span>
+          </div>
+        ) : (
+          <div className="text-zinc-600 text-xs mt-0.5">FT</div>
+        )}
       </div>
     )
   }

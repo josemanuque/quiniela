@@ -6,7 +6,8 @@ import { isMatchEditable } from '@/features/match/utils/matchUtils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyPrediction } from '../hooks/useMyPrediction'
 import { useSavePrediction } from '../hooks/useSavePrediction'
-import { TIER_TEXT_CLASSES } from '../utils/tierUtils'
+import { TIER_TEXT_CLASSES, computeLiveTier } from '../utils/tierUtils'
+import { useScoringConfig, getScoringForPhase, tierToPoints } from '@/features/competition/hooks/useScoringConfig'
 
 interface Props {
   match: MatchWithTeams
@@ -23,12 +24,12 @@ export function PredictionInput({ match }: Props) {
 
   const { data: prediction } = useMyPrediction(match.id)
   const { mutate: save, isPending, isSuccess } = useSavePrediction(match.id)
+  const { data: scoringConfigs } = useScoringConfig(match.round.competition_id)
 
   const [home, setHome] = useState('')
   const [away, setAway] = useState('')
   const initialised = useRef(false)
 
-  // Populate inputs from saved prediction once loaded
   useEffect(() => {
     if (prediction && !initialised.current) {
       setHome(String(prediction.home_score))
@@ -48,8 +49,31 @@ export function PredictionInput({ match }: Props) {
         </div>
       )
     }
+
     const tier = prediction.tier as PredictionTier | null
-    const ptsClass = tier ? TIER_TEXT_CLASSES[tier] : 'text-zinc-400'
+
+    // Compute projected tier + points for live matches
+    let projTier: PredictionTier | null = null
+    let projPts: number | null = null
+    if (
+      match.status === 'live' &&
+      match.home_score != null &&
+      match.away_score != null &&
+      prediction.points_earned === null
+    ) {
+      projTier = computeLiveTier(
+        { home_score: prediction.home_score, away_score: prediction.away_score },
+        { home_score: match.home_score, away_score: match.away_score },
+      )
+      if (scoringConfigs) {
+        const config = getScoringForPhase(scoringConfigs, match.round.phase)
+        if (config) projPts = tierToPoints(projTier, config)
+      }
+    }
+
+    const displayTier  = tier ?? projTier
+    const ptsClass     = displayTier ? TIER_TEXT_CLASSES[displayTier] : 'text-zinc-400'
+
     return (
       <div className="text-center mt-2.5">
         <span className="text-xs text-zinc-500">
@@ -57,11 +81,15 @@ export function PredictionInput({ match }: Props) {
           <span className="text-zinc-300 font-semibold tabular-nums">
             {prediction.home_score} – {prediction.away_score}
           </span>
-          {prediction.points_earned !== null && (
+          {prediction.points_earned !== null ? (
             <span className={cn('ml-2 font-semibold', ptsClass)}>
               +{prediction.points_earned}pts
             </span>
-          )}
+          ) : projTier !== null && projPts !== null ? (
+            <span className={cn('ml-2 font-semibold', ptsClass)}>
+              +{projPts} proj
+            </span>
+          ) : null}
         </span>
       </div>
     )

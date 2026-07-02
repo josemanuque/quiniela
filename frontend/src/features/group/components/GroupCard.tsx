@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Users, Copy, Check, ChevronRight } from 'lucide-react'
+import { Users, Copy, Check, ChevronRight, Trophy } from 'lucide-react'
 import type { GroupWithMemberCount } from '../services/groupService'
 
 interface Props {
@@ -47,6 +47,12 @@ export function GroupCard({ group, onClick }: Props) {
               <span className="font-mono">{group.invite_code}</span>
             </button>
           </div>
+          {group.stakes && (
+            <div className="flex items-center gap-1 mt-1.5">
+              <Trophy size={10} className="text-amber-400 flex-shrink-0" />
+              <p className="text-amber-300/70 text-xs truncate">{group.stakes}</p>
+            </div>
+          )}
         </div>
         <ChevronRight size={16} className="text-zinc-600 flex-shrink-0" />
       </div>

@@ -1,11 +1,13 @@
 import { useState } from 'react'
-import { Trophy, HelpCircle } from 'lucide-react'
+import { Trophy, HelpCircle, Star } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyGroups } from '@/features/group/hooks/useMyGroups'
 import { useLeaderboard } from '../hooks/useLeaderboard'
 import { LeaderboardRow } from './LeaderboardRow'
+import { GroupStatsPanel } from './GroupStatsPanel'
+import type { GlobalLeaderboardRow } from '../services/leaderboardService'
 
 type Tab = 'projected' | 'confirmed'
 
@@ -17,6 +19,7 @@ export function LeaderboardPage() {
   const [tab, setTab]     = useState<Tab>('projected')
 
   const groupId = scope === 'global' ? undefined : scope
+  const activeGroup = myGroups?.find(g => g.id === groupId)
   const { confirmed, projected, hasLiveMatches } = useLeaderboard(groupId)
 
   const activeTab = hasLiveMatches ? tab : 'confirmed'
@@ -76,6 +79,14 @@ export function LeaderboardPage() {
         </div>
       )}
 
+      {/* Group stakes banner */}
+      {activeGroup?.stakes && (
+        <div className="mx-4 mt-3 bg-amber-500/8 border border-amber-500/20 rounded-lg px-4 py-2.5 flex items-start gap-2.5">
+          <Star size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
+          <p className="text-amber-200/70 text-sm">{activeGroup.stakes}</p>
+        </div>
+      )}
+
       {/* Projected / Confirmed tab switcher — only when live matches exist */}
       {hasLiveMatches && (
         <div className="flex items-center gap-2 px-4 mt-3 max-w-2xl mx-auto w-full">
@@ -99,7 +110,7 @@ export function LeaderboardPage() {
       )}
 
       {/* Rows */}
-      <div className="flex-1 px-4 py-3 space-y-1.5 max-w-2xl mx-auto w-full">
+      <div className="px-4 py-3 space-y-1.5 max-w-2xl mx-auto w-full">
         {isLoading ? (
           <div className="space-y-1.5">
             {[1, 2, 3, 4, 5].map(i => (
@@ -142,6 +153,15 @@ export function LeaderboardPage() {
           ))
         )}
       </div>
+
+      {/* Group stats — trajectory + exact count charts */}
+      {groupId && activeGroup && (
+        <GroupStatsPanel
+          groupId={groupId}
+          confirmedRows={(confirmed.data ?? []) as GlobalLeaderboardRow[]}
+          currentUserId={user?.id}
+        />
+      )}
     </div>
   )
 }

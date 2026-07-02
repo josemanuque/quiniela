@@ -42,4 +42,19 @@ export const authService = {
     if (error) throw error
     return data
   },
+
+  async uploadAvatar(file: File, userId: string): Promise<string> {
+    const { error } = await supabase.storage
+      .from('avatars')
+      .upload(userId, file, {
+        cacheControl: '3600',
+        upsert: true,
+        contentType: file.type,
+      })
+    if (error) throw error
+
+    const { data } = supabase.storage.from('avatars').getPublicUrl(userId)
+    // Bust cache by appending a timestamp so the browser re-fetches the new image
+    return `${data.publicUrl}?t=${Date.now()}`
+  },
 }

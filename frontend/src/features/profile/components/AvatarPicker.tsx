@@ -1,3 +1,5 @@
+import { useRef } from 'react'
+import { Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface Option {
@@ -11,6 +13,7 @@ interface Props {
   googleUrl:  string | null
   currentUrl: string | null
   onSelect:   (url: string) => void
+  onUpload:   (file: File) => void
   isPending:  boolean
 }
 
@@ -18,7 +21,9 @@ function dicebear(style: string, seed: string) {
   return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}`
 }
 
-export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, isPending }: Props) {
+export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, onUpload, isPending }: Props) {
+  const fileInputRef = useRef<HTMLInputElement>(null)
+
   const options: Option[] = [
     ...(googleUrl ? [{ id: 'google', label: 'Google', url: googleUrl }] : []),
     { id: 'pixel-art', label: 'Pixel',    url: dicebear('pixel-art', userId) },
@@ -27,10 +32,37 @@ export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, isPendin
     { id: 'thumbs',    label: 'Abstract', url: dicebear('thumbs', userId)    },
   ]
 
+  function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) onUpload(file)
+    // Reset so re-selecting the same file fires onChange
+    e.target.value = ''
+  }
+
   return (
     <div className="flex gap-3 overflow-x-auto scrollbar-none pb-1">
+      {/* Upload button — always first */}
+      <button
+        onClick={() => fileInputRef.current?.click()}
+        disabled={isPending}
+        className="flex flex-col items-center gap-1.5 flex-shrink-0 group"
+      >
+        <div className="w-14 h-14 rounded-full overflow-hidden border-2 border-dashed border-zinc-600 group-hover:border-zinc-400 transition-all bg-zinc-800/60 flex items-center justify-center">
+          <Upload size={18} className="text-zinc-500 group-hover:text-zinc-300 transition-colors" />
+        </div>
+        <span className="text-[10px] text-zinc-500 group-hover:text-zinc-400">Upload</span>
+      </button>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif"
+        className="hidden"
+        onChange={handleFileChange}
+      />
+
       {options.map(opt => {
-        const isSelected = currentUrl === opt.url
+        const isSelected = currentUrl?.split('?')[0] === opt.url.split('?')[0]
         return (
           <button
             key={opt.id}

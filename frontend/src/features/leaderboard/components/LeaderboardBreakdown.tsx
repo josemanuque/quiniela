@@ -1,17 +1,25 @@
 import { useQuery } from '@tanstack/react-query'
 import { cn } from '@/lib/utils'
 import { leaderboardService, type BreakdownTier } from '../services/leaderboardService'
+import type { PredictionTier } from '@/types/domain.types'
+import {
+  TIER_LABELS,
+  TIER_TEXT_CLASSES,
+  TIER_BADGE_CLASSES,
+  TIER_ROW_CLASSES,
+} from '@/features/prediction/utils/tierUtils'
 
 interface Props {
   userId: string
 }
 
-const TIER_STYLES: Record<BreakdownTier, { label: string; pts: string; row: string; badge: string }> = {
-  exact:           { label: 'Exact score!',          pts: 'text-amber-400',   row: 'border-l-2 border-amber-500/50 bg-amber-500/5',    badge: 'bg-amber-500/20 text-amber-400'   },
-  partial_correct: { label: 'Partial + winner',       pts: 'text-emerald-400', row: 'border-l-2 border-emerald-500/50 bg-emerald-500/5', badge: 'bg-emerald-500/20 text-emerald-400' },
-  correct_winner:  { label: 'Correct winner',         pts: 'text-sky-400',     row: 'border-l-2 border-sky-500/50 bg-sky-500/5',        badge: 'bg-sky-500/20 text-sky-400'       },
-  partial_wrong:   { label: 'Partial + wrong winner', pts: 'text-orange-400',  row: 'border-l-2 border-orange-500/50 bg-orange-500/5',  badge: 'bg-orange-500/20 text-orange-400' },
-  miss:            { label: 'Miss',                   pts: 'text-zinc-500',    row: 'border-l-2 border-zinc-700/50 bg-zinc-800/30',     badge: 'bg-zinc-700 text-zinc-400'        },
+// BreakdownTier (DB function names) → PredictionTier (canonical app names)
+const BREAKDOWN_TO_TIER: Record<BreakdownTier, PredictionTier> = {
+  exact:           'exact',
+  partial_correct: 'partial_correct_winner',
+  correct_winner:  'correct_winner',
+  partial_wrong:   'partial_wrong',
+  miss:            'miss',
 }
 
 function Flag({ url, name }: { url: string | null; name: string }) {
@@ -47,9 +55,9 @@ export function LeaderboardBreakdown({ userId }: Props) {
   return (
     <div className="mt-2 space-y-1.5">
       {data.map(row => {
-        const style = TIER_STYLES[row.tier]
+        const tier = BREAKDOWN_TO_TIER[row.tier]
         return (
-          <div key={row.match_id} className={cn('rounded-md px-3 py-2.5', style.row)}>
+          <div key={row.match_id} className={cn('rounded-md px-3 py-2.5', TIER_ROW_CLASSES[tier])}>
             {/* Match + live score */}
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-1.5 min-w-0">
@@ -73,11 +81,11 @@ export function LeaderboardBreakdown({ userId }: Props) {
                 <span className="text-xs font-semibold text-zinc-200 tabular-nums">
                   {row.pred_home_score}–{row.pred_away_score}
                 </span>
-                <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded', style.badge)}>
-                  {style.label}
+                <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded', TIER_BADGE_CLASSES[tier])}>
+                  {TIER_LABELS[tier]}
                 </span>
               </div>
-              <span className={cn('text-sm font-bold tabular-nums flex-shrink-0', style.pts)}>
+              <span className={cn('text-sm font-bold tabular-nums flex-shrink-0', TIER_TEXT_CLASSES[tier])}>
                 {row.provisional_pts > 0 ? `+${row.provisional_pts}` : '—'}
               </span>
             </div>

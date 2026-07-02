@@ -140,4 +140,13 @@ export const groupService = {
 
     if (error) throw error
   },
+
+  async updateGroupStakes(groupId: string, stakes: string): Promise<void> {
+    const { error } = await supabase
+      .from('groups')
+      .update({ stakes: stakes.trim() || null, updated_at: new Date().toISOString() })
+      .eq('id', groupId)
+
+    if (error) throw error
+  },
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Check, LogOut, Star, Trophy, Target, Percent } from 'lucide-react'
+import { Check, LogOut, Star, Trophy, Target, Percent, Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useProfile } from '@/features/auth/hooks/useProfile'
@@ -37,8 +37,10 @@ export function ProfilePage() {
   const { mutate: updateProfile, isPending, isSuccess } = useUpdateProfile()
 
   const [displayName, setDisplayName] = useState('')
+  const [isUploading, setIsUploading] = useState(false)
   const nameChanged = displayName.trim() !== (profile?.display_name ?? '')
   const canSave = nameChanged && displayName.trim().length > 0 && displayName.trim().length <= 50
+  const isAvatarPending = isPending || isUploading
 
   // Sync input when profile loads
   useEffect(() => {
@@ -55,6 +57,17 @@ export function ProfilePage() {
 
   async function handleSignOut() {
     await authService.signOut()
+  }
+
+  async function handleUpload(file: File) {
+    if (!user) return
+    setIsUploading(true)
+    try {
+      const url = await authService.uploadAvatar(file, user.id)
+      updateProfile({ avatar_url: url })
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   return (
@@ -92,13 +105,20 @@ export function ProfilePage() {
           <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
             Avatar
           </h2>
+          {isUploading && (
+            <div className="flex items-center gap-2 text-xs text-zinc-400 mb-2">
+              <Upload size={12} className="animate-bounce" />
+              Uploading…
+            </div>
+          )}
           {user && (
             <AvatarPicker
               userId={user.id}
               googleUrl={googleAvatarUrl}
               currentUrl={profile?.avatar_url ?? null}
               onSelect={url => updateProfile({ avatar_url: url })}
-              isPending={isPending}
+              onUpload={handleUpload}
+              isPending={isAvatarPending}
             />
           )}
         </section>

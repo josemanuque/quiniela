@@ -34,12 +34,12 @@ const TIERS: Tier[] = [
   {
     id: 'partial_correct',
     Icon: CheckCheck,
-    title: 'Partial + Correct Winner',
+    title: 'Partial + Win',
     desc: 'One score matches and picked the right winner',
     pickHome: 2, pickAway: 1,
     resultHome: RESULT.home, resultAway: RESULT.away,
     groupPts: 3,
-    accent: { border: 'border-emerald-500', bg: 'bg-emerald-500/8', text: 'text-emerald-400', badge: 'bg-emerald-500/20 text-emerald-300', scoreBg: 'bg-emerald-500' },
+    accent: { border: 'border-green-500', bg: 'bg-green-500/8', text: 'text-green-400', badge: 'bg-green-500/20 text-green-300', scoreBg: 'bg-green-500' },
   },
   {
     id: 'correct_winner',
@@ -49,17 +49,17 @@ const TIERS: Tier[] = [
     pickHome: 3, pickAway: 1,
     resultHome: RESULT.home, resultAway: RESULT.away,
     groupPts: 2,
-    accent: { border: 'border-sky-500', bg: 'bg-sky-500/8', text: 'text-sky-400', badge: 'bg-sky-500/20 text-sky-300', scoreBg: 'bg-sky-500' },
+    accent: { border: 'border-blue-500', bg: 'bg-blue-500/8', text: 'text-blue-400', badge: 'bg-blue-500/20 text-blue-300', scoreBg: 'bg-blue-500' },
   },
   {
     id: 'partial_wrong',
     Icon: Minus,
-    title: 'Partial + Wrong Winner',
+    title: 'Partial + Loss',
     desc: 'One score matches but predicted the wrong winner',
     pickHome: 0, pickAway: 0,
     resultHome: RESULT.home, resultAway: RESULT.away,
     groupPts: 1,
-    accent: { border: 'border-orange-500', bg: 'bg-orange-500/8', text: 'text-orange-400', badge: 'bg-orange-500/20 text-orange-300', scoreBg: 'bg-orange-500' },
+    accent: { border: 'border-violet-500', bg: 'bg-violet-500/8', text: 'text-violet-400', badge: 'bg-violet-500/20 text-violet-300', scoreBg: 'bg-violet-500' },
   },
   {
     id: 'miss',
@@ -69,7 +69,7 @@ const TIERS: Tier[] = [
     pickHome: 1, pickAway: 2,
     resultHome: RESULT.home, resultAway: RESULT.away,
     groupPts: 0,
-    accent: { border: 'border-zinc-700', bg: 'bg-zinc-800/40', text: 'text-zinc-500', badge: 'bg-zinc-700/60 text-zinc-400', scoreBg: 'bg-zinc-600' },
+    accent: { border: 'border-red-700', bg: 'bg-red-900/20', text: 'text-red-500', badge: 'bg-red-900/30 text-red-400', scoreBg: 'bg-red-700' },
   },
 ]
 

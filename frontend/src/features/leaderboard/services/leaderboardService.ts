@@ -40,6 +40,18 @@ export interface LiveBreakdownRow {
   tier:            BreakdownTier
 }
 
+export type Granularity = 'round' | 'day' | 'match'
+
+export interface TrajectoryRow {
+  user_id:           string
+  display_name:      string
+  avatar_url:        string | null
+  x_sort:            string
+  x_label:           string
+  period_points:     number
+  cumulative_points: number
+}
+
 export const leaderboardService = {
   async getGlobalLeaderboard(): Promise<GlobalLeaderboardRow[]> {
     const { data, error } = await supabase.rpc('get_global_leaderboard')
@@ -69,5 +81,14 @@ export const leaderboardService = {
     const { data, error } = await supabase.rpc('get_user_live_breakdown', { p_user_id: userId })
     if (error) throw error
     return (data ?? []) as LiveBreakdownRow[]
+  },
+
+  async getGroupPointsTrajectory(groupId: string, granularity: Granularity): Promise<TrajectoryRow[]> {
+    const { data, error } = await supabase.rpc('get_group_points_trajectory', {
+      p_group_id:    groupId,
+      p_granularity: granularity,
+    })
+    if (error) throw error
+    return (data ?? []) as TrajectoryRow[]
   },
 }
