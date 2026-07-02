@@ -8,6 +8,7 @@ import { authService } from '@/features/auth/services/authService'
 import { useUpdateProfile } from '../hooks/useUpdateProfile'
 import { useMyStats } from '../hooks/useMyStats'
 import { AvatarPicker } from './AvatarPicker'
+import { NotificationSettings } from './NotificationSettings'
 
 function StatCard({
   icon: Icon,
@@ -210,6 +211,14 @@ export function ProfilePage() {
               {t('profile.scoredPredictions')}
             </p>
           )}
+        </section>
+
+        {/* Notifications */}
+        <section>
+          <h2 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            {t('notifications.title')}
+          </h2>
+          <NotificationSettings />
         </section>
 
         {/* Sign out */}

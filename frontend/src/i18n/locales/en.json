@@ -159,5 +159,20 @@
     "day": "Day",
     "match": "Match"
   },
-  "language": "Language"
+  "language": "Language",
+  "notifications": {
+    "title": "Notifications",
+    "unsupported": "Push notifications are not supported on this browser.",
+    "denied": "Notifications are blocked. Enable them in your browser settings to receive match reminders.",
+    "enable": "Enable notifications",
+    "enabling": "Enabling…",
+    "enabled": "Notifications enabled",
+    "disable": "Disable all notifications",
+    "daily": "Daily reminder",
+    "dailySub": "At 8am or 2 hrs before the first match — if you have picks to fill",
+    "pre1h": "1-hour reminder",
+    "pre1hSub": "1 hour before a match with a missing prediction",
+    "pre5m": "5-minute reminder",
+    "pre5mSub": "Final call — 5 minutes before kickoff"
+  }
 }

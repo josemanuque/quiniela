@@ -165,5 +165,20 @@
     "day": "Día",
     "match": "Partido"
   },
-  "language": "Idioma"
+  "language": "Idioma",
+  "notifications": {
+    "title": "Notificaciones",
+    "unsupported": "Las notificaciones push no son compatibles con este navegador.",
+    "denied": "Las notificaciones están bloqueadas. Actívalas en la configuración de tu navegador.",
+    "enable": "Activar notificaciones",
+    "enabling": "Activando…",
+    "enabled": "Notificaciones activas",
+    "disable": "Desactivar todas las notificaciones",
+    "daily": "Recordatorio diario",
+    "dailySub": "A las 8am o 2 hrs antes del primer partido — si tienes quinielas pendientes",
+    "pre1h": "Recordatorio 1 hora antes",
+    "pre1hSub": "1 hora antes de un partido sin predicción",
+    "pre5m": "Recordatorio 5 minutos antes",
+    "pre5mSub": "Último aviso — 5 minutos antes del inicio"
+  }
 }
