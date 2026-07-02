@@ -9,9 +9,9 @@ export function useUpdateProfile() {
 
   return useMutation({
     mutationFn: (updates: { display_name?: string; avatar_url?: string }) =>
-      authService.updateProfile(user!.id, updates),
+      authService.updateProfile(user?.id ?? '', updates),
     onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: queryKeys.profile(user!.id ?? '') })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.profile(user?.id ?? '') })
     },
   })
 }

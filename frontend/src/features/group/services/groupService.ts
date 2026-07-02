@@ -6,7 +6,7 @@ const INVITE_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'
 function generateInviteCode(): string {
   return Array.from(
     { length: 8 },
-    () => INVITE_CHARS[Math.floor(Math.random() * INVITE_CHARS.length)],
+    () => INVITE_CHARS[Math.floor(Math.random() * INVITE_CHARS.length)]
   ).join('')
 }
 
@@ -15,7 +15,9 @@ export type GroupMemberWithProfile = GroupMember & { profile: Profile }
 
 export const groupService = {
   async createGroup(name: string, competitionId: string): Promise<GroupWithMemberCount> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
     // Retry on invite_code unique constraint violation (astronomically rare)
@@ -36,13 +38,15 @@ export const groupService = {
         .insert({ group_id: data.id, user_id: user.id })
       if (joinErr) throw joinErr
 
-      return { ...data, member_count: 1 } as GroupWithMemberCount
+      return { ...data, member_count: 1 }
     }
     throw new Error('Failed to generate a unique invite code — please try again')
   },
 
   async joinGroupByCode(inviteCode: string): Promise<Group> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
     const { data: group, error: findErr } = await supabase
@@ -51,7 +55,7 @@ export const groupService = {
       .eq('invite_code', inviteCode.toUpperCase().trim())
       .single()
 
-    if (findErr || !group) throw new Error('Invalid invite code — group not found')
+    if (findErr) throw new Error('Invalid invite code — group not found')
 
     const { error } = await supabase
       .from('group_members')
@@ -60,11 +64,13 @@ export const groupService = {
     if (error?.code === '23505') throw new Error('You are already a member of this group')
     if (error) throw error
 
-    return group as Group
+    return group
   },
 
   async getMyGroups(): Promise<GroupWithMemberCount[]> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) return []
 
     // Step 1: groups I'm in
@@ -74,9 +80,9 @@ export const groupService = {
       .eq('user_id', user.id)
 
     if (memErr) throw memErr
-    if (!memberships?.length) return []
+    if (!memberships.length) return []
 
-    const groupIds = memberships.map(m => m.group_id as string)
+    const groupIds = memberships.map((m) => m.group_id)
 
     // Step 2: group details + all member counts in parallel
     const [groupsResult, countsResult] = await Promise.all([
@@ -87,14 +93,14 @@ export const groupService = {
     if (groupsResult.error) throw groupsResult.error
 
     const countMap = new Map<string, number>()
-    countsResult.data?.forEach(m => {
-      countMap.set(m.group_id as string, (countMap.get(m.group_id as string) ?? 0) + 1)
+    countsResult.data?.forEach((m) => {
+      countMap.set(m.group_id, (countMap.get(m.group_id) ?? 0) + 1)
     })
 
-    return (groupsResult.data ?? []).map(g => ({
+    return groupsResult.data.map((g) => ({
       ...g,
       member_count: countMap.get(g.id) ?? 0,
-    })) as GroupWithMemberCount[]
+    }))
   },
 
   async getGroupMembers(groupId: string): Promise<GroupMemberWithProfile[]> {
@@ -104,9 +110,9 @@ export const groupService = {
       .eq('group_id', groupId)
 
     if (memErr) throw memErr
-    if (!members?.length) return []
+    if (!members.length) return []
 
-    const userIds = members.map(m => m.user_id as string)
+    const userIds = members.map((m) => m.user_id)
     const { data: profiles, error: profErr } = await supabase
       .from('profiles')
       .select('*')
@@ -114,22 +120,24 @@ export const groupService = {
 
     if (profErr) throw profErr
 
-    const profileMap = new Map((profiles ?? []).map(p => [p.id as string, p as Profile]))
+    const profileMap = new Map(profiles.map((p) => [p.id, p]))
 
-    return members.map(m => ({
+    return members.map((m) => ({
       ...m,
-      profile: profileMap.get(m.user_id as string) ?? {
-        id: m.user_id as string,
+      profile: profileMap.get(m.user_id) ?? {
+        id: m.user_id,
         display_name: 'Unknown',
         avatar_url: null,
         created_at: '',
         updated_at: '',
       },
-    })) as GroupMemberWithProfile[]
+    }))
   },
 
   async leaveGroup(groupId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser()
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
     if (!user) throw new Error('Not authenticated')
 
     const { error } = await supabase

@@ -7,7 +7,11 @@ import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyPrediction } from '../hooks/useMyPrediction'
 import { useSavePrediction } from '../hooks/useSavePrediction'
 import { TIER_TEXT_CLASSES, computeLiveTier } from '../utils/tierUtils'
-import { useScoringConfig, getScoringForPhase, tierToPoints } from '@/features/competition/hooks/useScoringConfig'
+import {
+  useScoringConfig,
+  getScoringForPhase,
+  tierToPoints,
+} from '@/features/competition/hooks/useScoringConfig'
 
 interface Props {
   match: MatchWithTeams
@@ -23,7 +27,7 @@ export function PredictionInput({ match }: Props) {
   const editable = isMatchEditable(match.kickoff_at)
 
   const { data: prediction } = useMyPrediction(match.id)
-  const { mutate: save, isPending, isSuccess } = useSavePrediction(match.id)
+  const { mutate: save, isSuccess } = useSavePrediction(match.id)
   const { data: scoringConfigs } = useScoringConfig(match.round.competition_id)
 
   const [home, setHome] = useState('')
@@ -63,7 +67,7 @@ export function PredictionInput({ match }: Props) {
     ) {
       projTier = computeLiveTier(
         { home_score: prediction.home_score, away_score: prediction.away_score },
-        { home_score: match.home_score, away_score: match.away_score },
+        { home_score: match.home_score, away_score: match.away_score }
       )
       if (scoringConfigs) {
         const config = getScoringForPhase(scoringConfigs, match.round.phase)
@@ -71,8 +75,8 @@ export function PredictionInput({ match }: Props) {
       }
     }
 
-    const displayTier  = tier ?? projTier
-    const ptsClass     = displayTier ? TIER_TEXT_CLASSES[displayTier] : 'text-zinc-400'
+    const displayTier = tier ?? projTier
+    const ptsClass = displayTier ? TIER_TEXT_CLASSES[displayTier] : 'text-zinc-400'
 
     return (
       <div className="text-center mt-2.5">
@@ -86,9 +90,7 @@ export function PredictionInput({ match }: Props) {
               +{prediction.points_earned}pts
             </span>
           ) : projTier !== null && projPts !== null ? (
-            <span className={cn('ml-2 font-semibold', ptsClass)}>
-              +{projPts} proj
-            </span>
+            <span className={cn('ml-2 font-semibold', ptsClass)}>+{projPts} proj</span>
           ) : null}
         </span>
       </div>
@@ -111,7 +113,9 @@ export function PredictionInput({ match }: Props) {
           min={0}
           max={20}
           value={home}
-          onChange={e => setHome(e.target.value)}
+          onChange={(e) => {
+            setHome(e.target.value)
+          }}
           onBlur={handleBlur}
           placeholder="0"
           className={INPUT_CLASS}
@@ -122,7 +126,9 @@ export function PredictionInput({ match }: Props) {
           min={0}
           max={20}
           value={away}
-          onChange={e => setAway(e.target.value)}
+          onChange={(e) => {
+            setAway(e.target.value)
+          }}
           onBlur={handleBlur}
           placeholder="0"
           className={INPUT_CLASS}
@@ -131,7 +137,7 @@ export function PredictionInput({ match }: Props) {
       <div
         className={cn(
           'absolute right-0 transition-opacity duration-700',
-          isSuccess && !isPending ? 'opacity-100' : 'opacity-0',
+          isSuccess ? 'opacity-100' : 'opacity-0'
         )}
       >
         <Check size={14} className="text-emerald-400" />

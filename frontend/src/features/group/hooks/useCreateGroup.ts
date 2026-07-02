@@ -8,7 +8,7 @@ export function useCreateGroup() {
     mutationFn: ({ name, competitionId }: { name: string; competitionId: string }) =>
       groupService.createGroup(name, competitionId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.groups() })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups() })
     },
   })
 }

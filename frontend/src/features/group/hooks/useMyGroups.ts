@@ -5,6 +5,6 @@ import { groupService } from '../services/groupService'
 export function useMyGroups() {
   return useQuery({
     queryKey: queryKeys.groups(),
-    queryFn:  groupService.getMyGroups,
+    queryFn: () => groupService.getMyGroups(),
   })
 }

@@ -15,16 +15,23 @@ interface Props {
 
 // BreakdownTier (DB function names) → PredictionTier (canonical app names)
 const BREAKDOWN_TO_TIER: Record<BreakdownTier, PredictionTier> = {
-  exact:           'exact',
+  exact: 'exact',
   partial_correct: 'partial_correct_winner',
-  correct_winner:  'correct_winner',
-  partial_wrong:   'partial_wrong',
-  miss:            'miss',
+  correct_winner: 'correct_winner',
+  partial_wrong: 'partial_wrong',
+  miss: 'miss',
 }
 
 function Flag({ url, name }: { url: string | null; name: string }) {
   if (!url) return <div className="w-4 h-3 rounded-sm bg-zinc-700 flex-shrink-0" />
-  return <img src={url} alt={name} className="w-4 h-3 rounded-sm object-cover flex-shrink-0" loading="lazy" />
+  return (
+    <img
+      src={url}
+      alt={name}
+      className="w-4 h-3 rounded-sm object-cover flex-shrink-0"
+      loading="lazy"
+    />
+  )
 }
 
 export function LeaderboardBreakdown({ userId }: Props) {
@@ -37,7 +44,7 @@ export function LeaderboardBreakdown({ userId }: Props) {
   if (isLoading) {
     return (
       <div className="mt-2 space-y-1.5 px-1">
-        {[1, 2].map(i => (
+        {[1, 2].map((i) => (
           <div key={i} className="h-12 bg-zinc-800/40 rounded animate-pulse" />
         ))}
       </div>
@@ -45,16 +52,12 @@ export function LeaderboardBreakdown({ userId }: Props) {
   }
 
   if (!data || data.length === 0) {
-    return (
-      <div className="mt-2 px-3 py-2 text-xs text-zinc-600">
-        No live match predictions
-      </div>
-    )
+    return <div className="mt-2 px-3 py-2 text-xs text-zinc-600">No live match predictions</div>
   }
 
   return (
     <div className="mt-2 space-y-1.5">
-      {data.map(row => {
+      {data.map((row) => {
         const tier = BREAKDOWN_TO_TIER[row.tier]
         return (
           <div key={row.match_id} className={cn('rounded-md px-3 py-2.5', TIER_ROW_CLASSES[tier])}>
@@ -81,12 +84,22 @@ export function LeaderboardBreakdown({ userId }: Props) {
                 <span className="text-xs font-semibold text-zinc-200 tabular-nums">
                   {row.pred_home_score}–{row.pred_away_score}
                 </span>
-                <span className={cn('text-[10px] font-medium px-1.5 py-0.5 rounded', TIER_BADGE_CLASSES[tier])}>
+                <span
+                  className={cn(
+                    'text-[10px] font-medium px-1.5 py-0.5 rounded',
+                    TIER_BADGE_CLASSES[tier]
+                  )}
+                >
                   {TIER_LABELS[tier]}
                 </span>
               </div>
-              <span className={cn('text-sm font-bold tabular-nums flex-shrink-0', TIER_TEXT_CLASSES[tier])}>
-                {row.provisional_pts > 0 ? `+${row.provisional_pts}` : '—'}
+              <span
+                className={cn(
+                  'text-sm font-bold tabular-nums flex-shrink-0',
+                  TIER_TEXT_CLASSES[tier]
+                )}
+              >
+                {row.provisional_pts > 0 ? `+${row.provisional_pts.toString()}` : '—'}
               </span>
             </div>
           </div>

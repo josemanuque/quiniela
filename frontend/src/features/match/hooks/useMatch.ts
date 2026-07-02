@@ -5,7 +5,7 @@ import { matchService } from '../services/matchService'
 export function useMatch(matchId: string | undefined) {
   return useQuery({
     queryKey: queryKeys.match(matchId ?? ''),
-    queryFn:  () => matchService.getMatch(matchId!),
-    enabled:  !!matchId,
+    queryFn: () => matchService.getMatch(matchId ?? ''),
+    enabled: !!matchId,
   })
 }

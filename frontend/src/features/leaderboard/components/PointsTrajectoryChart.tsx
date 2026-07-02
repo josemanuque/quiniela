@@ -1,6 +1,12 @@
 import {
-  LineChart, Line, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
 } from 'recharts'
 import type { TrajectoryRow, Granularity } from '../services/leaderboardService'
 
@@ -17,13 +23,20 @@ const LINE_COLORS = [
 ]
 
 interface Props {
-  rows:        TrajectoryRow[]
+  rows: TrajectoryRow[]
   granularity: Granularity
 }
 
-type DataPoint = { x_sort: string; x_label: string } & Record<string, number>
+type DataPoint = {
+  x_sort: string
+  x_label: string
+  [key: string]: number | string | undefined
+}
 
-function buildData(rows: TrajectoryRow[]): { data: DataPoint[]; users: { user_id: string; display_name: string }[] } {
+function buildData(rows: TrajectoryRow[]): {
+  data: DataPoint[]
+  users: { user_id: string; display_name: string }[]
+} {
   const userMap = new Map<string, string>()
   const byXSort = new Map<string, DataPoint>()
 
@@ -32,18 +45,20 @@ function buildData(rows: TrajectoryRow[]): { data: DataPoint[]; users: { user_id
     if (!byXSort.has(row.x_sort)) {
       byXSort.set(row.x_sort, { x_sort: row.x_sort, x_label: row.x_label })
     }
-    byXSort.get(row.x_sort)![row.user_id] = row.cumulative_points
+    const point = byXSort.get(row.x_sort)
+    if (point) point[row.user_id] = row.cumulative_points
   }
 
   const sorted = [...byXSort.values()].sort((a, b) => a.x_sort.localeCompare(b.x_sort))
-  const users  = [...userMap.entries()].map(([user_id, display_name]) => ({ user_id, display_name }))
+  const users = [...userMap.entries()].map(([user_id, display_name]) => ({ user_id, display_name }))
 
   // Forward-fill: each user's cumulative total persists to periods where they have no new points
-  const lastSeen: Record<string, number> = {}
+  const lastSeen: Partial<Record<string, number>> = {}
   for (const point of sorted) {
     for (const { user_id } of users) {
-      if (point[user_id] !== undefined) {
-        lastSeen[user_id] = point[user_id]
+      const value = point[user_id]
+      if (typeof value === 'number') {
+        lastSeen[user_id] = value
       } else if (lastSeen[user_id] !== undefined) {
         point[user_id] = lastSeen[user_id]
       }
@@ -54,9 +69,14 @@ function buildData(rows: TrajectoryRow[]): { data: DataPoint[]; users: { user_id
 }
 
 const TOOLTIP_STYLE = {
-  contentStyle: { background: '#18181b', border: '1px solid #3f3f46', borderRadius: '8px', padding: '8px 12px' },
-  labelStyle:   { color: '#e4e4e7', fontSize: 12, marginBottom: 4 },
-  itemStyle:    { color: '#a1a1aa', fontSize: 12 },
+  contentStyle: {
+    background: '#18181b',
+    border: '1px solid #3f3f46',
+    borderRadius: '8px',
+    padding: '8px 12px',
+  },
+  labelStyle: { color: '#e4e4e7', fontSize: 12, marginBottom: 4 },
+  itemStyle: { color: '#a1a1aa', fontSize: 12 },
 }
 
 export function PointsTrajectoryChart({ rows, granularity }: Props) {
@@ -66,7 +86,10 @@ export function PointsTrajectoryChart({ rows, granularity }: Props) {
 
   return (
     <ResponsiveContainer width="100%" height={220}>
-      <LineChart data={data} margin={{ top: 4, right: 4, left: -24, bottom: isMatch ? 56 : 4 }}>
+      <LineChart
+        data={data}
+        margin={{ top: isMatch ? 32 : 4, right: 16, left: 4, bottom: isMatch ? 64 : 4 }}
+      >
         <CartesianGrid stroke="#27272a" strokeDasharray="3 3" />
         <XAxis
           dataKey="x_label"
@@ -75,15 +98,16 @@ export function PointsTrajectoryChart({ rows, granularity }: Props) {
           textAnchor={isMatch ? 'end' : 'middle'}
           interval={isMatch ? 'preserveStartEnd' : 0}
         />
-        <YAxis
-          tick={{ fill: '#71717a', fontSize: 10 }}
-          allowDecimals={false}
-          width={36}
-        />
+        <YAxis tick={{ fill: '#71717a', fontSize: 10 }} allowDecimals={false} width={28} />
         <Tooltip {...TOOLTIP_STYLE} />
         {users.length <= 8 && (
           <Legend
-            wrapperStyle={{ fontSize: 11, paddingTop: isMatch ? 0 : 8 }}
+            verticalAlign={isMatch ? 'top' : 'bottom'}
+            wrapperStyle={{
+              fontSize: 11,
+              paddingBottom: isMatch ? 4 : 0,
+              paddingTop: isMatch ? 0 : 8,
+            }}
             formatter={(value) => <span style={{ color: '#a1a1aa' }}>{value}</span>}
           />
         )}

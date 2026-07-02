@@ -1,11 +1,6 @@
 import { useState } from 'react'
 import { Copy, Check } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { useCreateGroup } from '../hooks/useCreateGroup'
@@ -24,22 +19,27 @@ export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) 
 
   const { mutate: createGroup, isPending, error } = useCreateGroup()
 
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
     createGroup(
       { name: name.trim(), competitionId },
       {
-        onSuccess: (group) => setCreated(group),
-      },
+        onSuccess: (group) => {
+          setCreated(group)
+        },
+      }
     )
   }
 
   function handleCopy() {
     if (!created) return
-    navigator.clipboard.writeText(created.invite_code).then(() => {
+    void navigator.clipboard.writeText(created.invite_code).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
     })
   }
 
@@ -78,26 +78,24 @@ export function CreateGroupDialog({ open, onOpenChange, competitionId }: Props) 
                 {copied ? <Check size={16} className="text-emerald-400" /> : <Copy size={16} />}
               </button>
             </div>
-            <Button onClick={handleClose} className="w-full">Done</Button>
+            <Button onClick={handleClose} className="w-full">
+              Done
+            </Button>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             <Input
               placeholder="Group name"
               value={name}
-              onChange={e => setName(e.target.value)}
+              onChange={(e) => {
+                setName(e.target.value)
+              }}
               className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
               autoFocus
               maxLength={60}
             />
-            {error && (
-              <p className="text-red-400 text-sm">{(error as Error).message}</p>
-            )}
-            <Button
-              type="submit"
-              disabled={!name.trim() || isPending}
-              className="w-full"
-            >
+            {error && <p className="text-red-400 text-sm">{error.message}</p>}
+            <Button type="submit" disabled={!name.trim() || isPending} className="w-full">
               {isPending ? 'Creating…' : 'Create group'}
             </Button>
           </form>

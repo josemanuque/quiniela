@@ -7,12 +7,12 @@ import type { GlobalLeaderboardRow } from '../services/leaderboardService'
 
 const GRANULARITIES: { key: Granularity; label: string }[] = [
   { key: 'round', label: 'Round' },
-  { key: 'day',   label: 'Day'   },
+  { key: 'day', label: 'Day' },
   { key: 'match', label: 'Match' },
 ]
 
 interface Props {
-  groupId:       string
+  groupId: string
   confirmedRows: GlobalLeaderboardRow[]
   currentUserId: string | undefined
 }
@@ -21,11 +21,10 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
   const [granularity, setGranularity] = useState<Granularity>('round')
   const { data: trajectoryRows, isLoading } = useGroupTrajectory(groupId, granularity)
 
-  const hasExacts = confirmedRows.some(r => r.exact_count > 0)
+  const hasExacts = confirmedRows.some((r) => r.exact_count > 0)
 
   return (
     <div className="mt-2 space-y-4 border-t border-zinc-800 pt-5 max-w-2xl mx-auto w-full px-4 pb-6">
-
       {/* Points trajectory */}
       <div>
         <div className="flex items-center justify-between mb-3">
@@ -33,15 +32,17 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
             Points Trajectory
           </h3>
           <div className="flex gap-0.5 bg-zinc-900 rounded-full p-0.5">
-            {GRANULARITIES.map(g => (
+            {GRANULARITIES.map((g) => (
               <button
                 key={g.key}
-                onClick={() => setGranularity(g.key)}
+                onClick={() => {
+                  setGranularity(g.key)
+                }}
                 className={cn(
                   'px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors',
                   granularity === g.key
                     ? 'bg-zinc-700 text-white'
-                    : 'text-zinc-500 hover:text-zinc-300',
+                    : 'text-zinc-500 hover:text-zinc-300'
                 )}
               >
                 {g.label}

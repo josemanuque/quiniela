@@ -6,6 +6,7 @@ import { TeamFlag } from './TeamFlag'
 import { PredictionInput } from '@/features/prediction/components/PredictionInput'
 import { useMyPrediction } from '@/features/prediction/hooks/useMyPrediction'
 import { TIER_BORDER_CLASSES } from '@/features/prediction/utils/tierUtils'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 function ScoreOrTime({ match }: { match: MatchWithTeams }) {
   if (match.status === 'live') {
@@ -64,30 +65,40 @@ export function MatchCard({ match }: { match: MatchWithTeams }) {
     void navigate({ to: '/app/matches/$matchId', params: { matchId: match.id } })
   }
 
-  return (
+  const card = (
     <div
       role={isClickable ? 'button' : undefined}
       tabIndex={isClickable ? 0 : undefined}
       onClick={isClickable ? handleClick : undefined}
-      onKeyDown={isClickable ? e => e.key === 'Enter' && handleClick() : undefined}
+      onKeyDown={
+        isClickable
+          ? (e) => {
+              if (e.key === 'Enter') handleClick()
+            }
+          : undefined
+      }
       className={cn(
         'bg-zinc-900 rounded-lg px-4 py-4 border-l-2 transition-colors',
         isClickable && 'cursor-pointer hover:bg-zinc-800 active:bg-zinc-800',
-        tier ? TIER_BORDER_CLASSES[tier] : 'border-l-transparent',
+        tier ? TIER_BORDER_CLASSES[tier] : 'border-l-transparent'
       )}
     >
       <div className="flex items-center justify-between gap-4">
         {/* Home team */}
         <div className="flex-1 flex items-center gap-2.5 min-w-0">
           <TeamFlag flagUrl={match.home_team.flag_url} name={match.home_team.name} size="md" />
-          <span className="text-sm font-medium text-white truncate">{match.home_team.short_name}</span>
+          <span className="text-sm font-medium text-white truncate">
+            {match.home_team.short_name}
+          </span>
         </div>
 
         <ScoreOrTime match={match} />
 
         {/* Away team */}
         <div className="flex-1 flex items-center justify-end gap-2.5 min-w-0">
-          <span className="text-sm font-medium text-white truncate text-right">{match.away_team.short_name}</span>
+          <span className="text-sm font-medium text-white truncate text-right">
+            {match.away_team.short_name}
+          </span>
           <TeamFlag flagUrl={match.away_team.flag_url} name={match.away_team.name} size="md" />
         </div>
       </div>
@@ -98,5 +109,16 @@ export function MatchCard({ match }: { match: MatchWithTeams }) {
 
       <PredictionInput match={match} />
     </div>
+  )
+
+  if (!isClickable) return card
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>{card}</TooltipTrigger>
+      <TooltipContent side="top" className="bg-zinc-800 border-zinc-700 text-zinc-200 text-xs">
+        Tap to see all predictions
+      </TooltipContent>
+    </Tooltip>
   )
 }

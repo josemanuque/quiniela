@@ -10,8 +10,8 @@ export function useMatchesByRound(roundId: string | undefined) {
 
   const query = useQuery({
     queryKey: queryKeys.matches(roundId),
-    queryFn:  () => matchService.getMatchesByRound(roundId!),
-    enabled:  !!roundId,
+    queryFn: () => matchService.getMatchesByRound(roundId ?? ''),
+    enabled: !!roundId,
   })
 
   // Subscribe to live score updates via Supabase Realtime.
@@ -25,26 +25,28 @@ export function useMatchesByRound(roundId: string | undefined) {
       .on(
         'postgres_changes',
         {
-          event:  'UPDATE',
+          event: 'UPDATE',
           schema: 'public',
-          table:  'matches',
+          table: 'matches',
           filter: `round_id=eq.${roundId}`,
         },
         (payload) => {
           queryClient.setQueryData<MatchWithTeams[]>(
             queryKeys.matches(roundId),
             (old) =>
-              old?.map(m =>
+              old?.map((m) =>
                 m.id === (payload.new as { id: string }).id
                   ? { ...m, ...(payload.new as Partial<MatchWithTeams>) }
-                  : m,
-              ) ?? old,
+                  : m
+              ) ?? old
           )
-        },
+        }
       )
       .subscribe()
 
-    return () => { supabase.removeChannel(channel) }
+    return () => {
+      void supabase.removeChannel(channel)
+    }
   }, [roundId, queryClient])
 
   return query

@@ -11,16 +11,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
+    void supabase.auth.getSession().then(({ data }) => {
       setSession(data.session)
       setIsLoading(false)
     })
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, newSession) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, newSession) => {
       setSession(newSession)
     })
 
-    return () => subscription.unsubscribe()
+    return () => {
+      subscription.unsubscribe()
+    }
   }, [])
 
   const value: AuthState = {
@@ -32,6 +36,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export function useAuth(): AuthState {
   const ctx = useContext(AuthContext)
   if (!ctx) throw new Error('useAuth must be used inside <AuthProvider>')
@@ -39,6 +44,7 @@ export function useAuth(): AuthState {
 }
 
 // Narrow helpers
+// eslint-disable-next-line react-refresh/only-export-components
 export function useUser(): User {
   const { user } = useAuth()
   if (!user) throw new Error('useUser called outside an authenticated context')

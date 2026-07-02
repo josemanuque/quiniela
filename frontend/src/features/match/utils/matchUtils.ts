@@ -18,9 +18,9 @@ export function isMatchEditable(kickoffAt: string): boolean {
 export function getScoreDisplay(
   status: MatchStatus,
   homeScore: number | null,
-  awayScore: number | null,
+  awayScore: number | null
 ): string {
   if (status === 'upcoming') return 'vs'
   if (homeScore === null || awayScore === null) return '-'
-  return `${homeScore} – ${awayScore}`
+  return `${homeScore.toString()} – ${awayScore.toString()}`
 }

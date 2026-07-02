@@ -12,9 +12,11 @@ export function GroupCard({ group, onClick }: Props) {
 
   function handleCopy(e: React.MouseEvent) {
     e.stopPropagation()
-    navigator.clipboard.writeText(group.invite_code).then(() => {
+    void navigator.clipboard.writeText(group.invite_code).then(() => {
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      setTimeout(() => {
+        setCopied(false)
+      }, 2000)
     })
   }
 
@@ -23,7 +25,9 @@ export function GroupCard({ group, onClick }: Props) {
       role="button"
       tabIndex={0}
       onClick={onClick}
-      onKeyDown={e => e.key === 'Enter' && onClick()}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') onClick()
+      }}
       className="bg-zinc-900 rounded-lg px-4 py-3 cursor-pointer hover:bg-zinc-800 active:bg-zinc-800 transition-colors"
     >
       <div className="flex items-center gap-3">
@@ -39,11 +43,7 @@ export function GroupCard({ group, onClick }: Props) {
               className="flex items-center gap-1 text-zinc-600 hover:text-zinc-400 text-xs transition-colors"
               aria-label="Copy invite code"
             >
-              {copied ? (
-                <Check size={11} className="text-emerald-400" />
-              ) : (
-                <Copy size={11} />
-              )}
+              {copied ? <Check size={11} className="text-emerald-400" /> : <Copy size={11} />}
               <span className="font-mono">{group.invite_code}</span>
             </button>
           </div>

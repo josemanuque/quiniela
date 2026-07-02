@@ -3,33 +3,40 @@ import { Upload } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 interface Option {
-  id:    string
+  id: string
   label: string
-  url:   string
+  url: string
 }
 
 interface Props {
-  userId:     string
-  googleUrl:  string | null
+  userId: string
+  googleUrl: string | null
   currentUrl: string | null
-  onSelect:   (url: string) => void
-  onUpload:   (file: File) => void
-  isPending:  boolean
+  onSelect: (url: string) => void
+  onUpload: (file: File) => void
+  isPending: boolean
 }
 
 function dicebear(style: string, seed: string) {
   return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}`
 }
 
-export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, onUpload, isPending }: Props) {
+export function AvatarPicker({
+  userId,
+  googleUrl,
+  currentUrl,
+  onSelect,
+  onUpload,
+  isPending,
+}: Props) {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const options: Option[] = [
     ...(googleUrl ? [{ id: 'google', label: 'Google', url: googleUrl }] : []),
-    { id: 'pixel-art', label: 'Pixel',    url: dicebear('pixel-art', userId) },
-    { id: 'bottts',    label: 'Robot',    url: dicebear('bottts', userId)    },
-    { id: 'fun-emoji', label: 'Emoji',    url: dicebear('fun-emoji', userId) },
-    { id: 'thumbs',    label: 'Abstract', url: dicebear('thumbs', userId)    },
+    { id: 'pixel-art', label: 'Pixel', url: dicebear('pixel-art', userId) },
+    { id: 'bottts', label: 'Robot', url: dicebear('bottts', userId) },
+    { id: 'fun-emoji', label: 'Emoji', url: dicebear('fun-emoji', userId) },
+    { id: 'thumbs', label: 'Abstract', url: dicebear('thumbs', userId) },
   ]
 
   function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -61,12 +68,14 @@ export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, onUpload
         onChange={handleFileChange}
       />
 
-      {options.map(opt => {
+      {options.map((opt) => {
         const isSelected = currentUrl?.split('?')[0] === opt.url.split('?')[0]
         return (
           <button
             key={opt.id}
-            onClick={() => onSelect(opt.url)}
+            onClick={() => {
+              onSelect(opt.url)
+            }}
             disabled={isPending}
             className="flex flex-col items-center gap-1.5 flex-shrink-0 group"
           >
@@ -75,7 +84,7 @@ export function AvatarPicker({ userId, googleUrl, currentUrl, onSelect, onUpload
                 'w-14 h-14 rounded-full overflow-hidden border-2 transition-all',
                 isSelected
                   ? 'border-emerald-400 ring-2 ring-emerald-400/30'
-                  : 'border-zinc-700 group-hover:border-zinc-500',
+                  : 'border-zinc-700 group-hover:border-zinc-500'
               )}
             >
               <img

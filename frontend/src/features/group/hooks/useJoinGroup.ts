@@ -7,7 +7,7 @@ export function useJoinGroup() {
   return useMutation({
     mutationFn: (inviteCode: string) => groupService.joinGroupByCode(inviteCode),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.groups() })
+      void queryClient.invalidateQueries({ queryKey: queryKeys.groups() })
     },
   })
 }

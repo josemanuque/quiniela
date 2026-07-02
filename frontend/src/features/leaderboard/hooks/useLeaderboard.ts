@@ -14,14 +14,14 @@ export function useLeaderboard(groupId?: string) {
     queryKey: queryKeys.leaderboard(scope, 'confirmed'),
     queryFn: groupId
       ? () => leaderboardService.getGroupLeaderboard(groupId)
-      : leaderboardService.getGlobalLeaderboard,
+      : () => leaderboardService.getGlobalLeaderboard(),
   })
 
   const projected = useQuery({
     queryKey: queryKeys.leaderboard(scope, 'projected'),
     queryFn: groupId
       ? () => leaderboardService.getGroupProjectedLeaderboard(groupId)
-      : leaderboardService.getProjectedLeaderboard,
+      : () => leaderboardService.getProjectedLeaderboard(),
   })
 
   const liveCount = useQuery({
@@ -48,7 +48,9 @@ export function useLeaderboard(groupId?: string) {
       })
       .subscribe()
 
-    return () => { void supabase.removeChannel(channel) }
+    return () => {
+      void supabase.removeChannel(channel)
+    }
   }, [queryClient, scope])
 
   const hasLiveMatches = (liveCount.data ?? 0) > 0

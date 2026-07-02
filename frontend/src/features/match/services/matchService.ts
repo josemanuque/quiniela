@@ -17,7 +17,7 @@ export const matchService = {
       .order('kickoff_at', { ascending: true })
 
     if (error) throw error
-    return data as MatchWithTeams[]
+    return data
   },
 
   async getMatch(matchId: string): Promise<MatchWithTeams> {
@@ -28,7 +28,7 @@ export const matchService = {
       .single()
 
     if (error) throw error
-    return data as MatchWithTeams
+    return data
   },
 
   async getMatchesNow(competitionId: string): Promise<MatchWithTeams[]> {
@@ -42,12 +42,12 @@ export const matchService = {
       .select(MATCH_SELECT)
       .eq('competition_id', competitionId)
       .or(
-        `status.eq.live,and(kickoff_at.gte.${todayStart.toISOString()},kickoff_at.lt.${tomorrowStart.toISOString()})`,
+        `status.eq.live,and(kickoff_at.gte.${todayStart.toISOString()},kickoff_at.lt.${tomorrowStart.toISOString()})`
       )
       .order('kickoff_at', { ascending: true })
 
     if (error) throw error
-    return data as MatchWithTeams[]
+    return data
   },
 
   async getMatchesByCompetition(competitionId: string): Promise<MatchWithTeams[]> {
@@ -58,6 +58,6 @@ export const matchService = {
       .order('kickoff_at', { ascending: true })
 
     if (error) throw error
-    return data as MatchWithTeams[]
+    return data
   },
 }

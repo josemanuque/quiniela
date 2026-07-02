@@ -7,19 +7,23 @@ import prettier from 'eslint-config-prettier'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  // ignore build output
-  globalIgnores(['dist', 'node_modules']),
+  // ignore build output and generated files
+  globalIgnores(['dist', 'node_modules', 'src/types/database.types.ts']),
 
   // ─────────────────────────────
-  // Browser / Frontend code
+  // Browser / Frontend TypeScript code
   // ─────────────────────────────
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.{ts,tsx}'],
 
     languageOptions: {
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname,
+      },
       globals: {
-        ...globals.browser
-      }
+        ...globals.browser,
+      },
     },
 
     extends: [
@@ -27,13 +31,33 @@ export default defineConfig([
       tseslint.configs.strictTypeChecked,
       reactHooks.configs.flat.recommended,
       reactRefresh.configs.vite,
-      prettier
+      prettier,
     ],
 
     rules: {
       // React safety (important for your app: realtime + state heavy)
-      'react-hooks/exhaustive-deps': 'warn'
-    }
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
+
+  // ─────────────────────────────
+  // Browser / Frontend JavaScript code
+  // ─────────────────────────────
+  {
+    files: ['**/*.{js,jsx}'],
+
+    languageOptions: {
+      globals: {
+        ...globals.browser,
+      },
+    },
+
+    extends: [
+      js.configs.recommended,
+      reactHooks.configs.flat.recommended,
+      reactRefresh.configs.vite,
+      prettier,
+    ],
   },
 
   // ─────────────────────────────
@@ -44,8 +68,8 @@ export default defineConfig([
 
     languageOptions: {
       globals: {
-        ...globals.node
-      }
-    }
-  }
+        ...globals.node,
+      },
+    },
+  },
 ])

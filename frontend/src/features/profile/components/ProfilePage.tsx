@@ -44,11 +44,12 @@ export function ProfilePage() {
 
   // Sync input when profile loads
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (profile?.display_name) setDisplayName(profile.display_name)
   }, [profile?.display_name])
 
   const googleAvatarUrl: string | null =
-    (user?.user_metadata?.avatar_url as string | undefined) ?? null
+    (user?.user_metadata.avatar_url as string | undefined) ?? null
 
   const accuracy =
     stats && stats.scored_predictions > 0
@@ -116,8 +117,12 @@ export function ProfilePage() {
               userId={user.id}
               googleUrl={googleAvatarUrl}
               currentUrl={profile?.avatar_url ?? null}
-              onSelect={url => updateProfile({ avatar_url: url })}
-              onUpload={handleUpload}
+              onSelect={(url) => {
+                updateProfile({ avatar_url: url })
+              }}
+              onUpload={(file) => {
+                void handleUpload(file)
+              }}
               isPending={isAvatarPending}
             />
           )}
@@ -132,19 +137,23 @@ export function ProfilePage() {
             <input
               type="text"
               value={displayName}
-              onChange={e => setDisplayName(e.target.value)}
+              onChange={(e) => {
+                setDisplayName(e.target.value)
+              }}
               maxLength={50}
               placeholder="Your name"
               className="flex-1 h-10 px-3 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-sm placeholder:text-zinc-600 outline-none focus:border-emerald-500 transition-colors"
             />
             <button
-              onClick={() => updateProfile({ display_name: displayName.trim() })}
+              onClick={() => {
+                updateProfile({ display_name: displayName.trim() })
+              }}
               disabled={!canSave || isPending}
               className={cn(
                 'h-10 px-4 rounded-lg text-sm font-medium transition-all flex items-center gap-1.5',
                 canSave && !isPending
                   ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
-                  : 'bg-zinc-800 text-zinc-600 cursor-not-allowed',
+                  : 'bg-zinc-800 text-zinc-600 cursor-not-allowed'
               )}
             >
               {isSuccess && !nameChanged ? (
@@ -177,7 +186,7 @@ export function ProfilePage() {
             <StatCard
               icon={Trophy}
               label="Global Rank"
-              value={stats?.global_rank ? `#${stats.global_rank}` : '—'}
+              value={stats?.global_rank ? `#${stats.global_rank.toString()}` : '—'}
               accent="text-yellow-400"
             />
             <StatCard
@@ -189,13 +198,14 @@ export function ProfilePage() {
             <StatCard
               icon={Percent}
               label="Accuracy"
-              value={accuracy !== null ? `${accuracy}%` : '—'}
+              value={accuracy !== null ? `${accuracy.toString()}%` : '—'}
               accent="text-emerald-400"
             />
           </div>
           {stats && stats.scored_predictions > 0 && (
             <p className="text-xs text-zinc-600 mt-2 text-center">
-              {stats.correct_predictions} correct out of {stats.scored_predictions} scored predictions
+              {stats.correct_predictions} correct out of {stats.scored_predictions} scored
+              predictions
             </p>
           )}
         </section>
@@ -204,7 +214,9 @@ export function ProfilePage() {
         <section className="pt-2 pb-6">
           <div className="border-t border-zinc-800 pt-6">
             <button
-              onClick={handleSignOut}
+              onClick={() => {
+                void handleSignOut()
+              }}
               className="w-full flex items-center justify-center gap-2 h-11 rounded-xl border border-red-900/50 text-red-400 hover:bg-red-900/20 transition-colors text-sm font-medium"
             >
               <LogOut size={15} />

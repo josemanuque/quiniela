@@ -6,16 +6,16 @@ import { cn } from '@/lib/utils'
 type Phase = 'group' | 'knockout'
 
 interface Tier {
-  id:          string
-  Icon:        React.ElementType
-  title:       string
-  desc:        string
-  pickHome:    number
-  pickAway:    number
-  resultHome:  number
-  resultAway:  number
-  groupPts:    number
-  accent:      { border: string; bg: string; text: string; badge: string; scoreBg: string }
+  id: string
+  Icon: React.ElementType
+  title: string
+  desc: string
+  pickHome: number
+  pickAway: number
+  resultHome: number
+  resultAway: number
+  groupPts: number
+  accent: { border: string; bg: string; text: string; badge: string; scoreBg: string }
 }
 
 const RESULT = { home: 2, away: 0 }
@@ -26,50 +26,90 @@ const TIERS: Tier[] = [
     Icon: Star,
     title: 'Exact Score',
     desc: 'Predicted the exact final score for both teams',
-    pickHome: 2, pickAway: 0,
-    resultHome: RESULT.home, resultAway: RESULT.away,
+    pickHome: 2,
+    pickAway: 0,
+    resultHome: RESULT.home,
+    resultAway: RESULT.away,
     groupPts: 5,
-    accent: { border: 'border-amber-500', bg: 'bg-amber-500/8', text: 'text-amber-400', badge: 'bg-amber-500/20 text-amber-300', scoreBg: 'bg-amber-500' },
+    accent: {
+      border: 'border-amber-500',
+      bg: 'bg-amber-500/8',
+      text: 'text-amber-400',
+      badge: 'bg-amber-500/20 text-amber-300',
+      scoreBg: 'bg-amber-500',
+    },
   },
   {
     id: 'partial_correct',
     Icon: CheckCheck,
     title: 'Partial + Win',
     desc: 'One score matches and picked the right winner',
-    pickHome: 2, pickAway: 1,
-    resultHome: RESULT.home, resultAway: RESULT.away,
+    pickHome: 2,
+    pickAway: 1,
+    resultHome: RESULT.home,
+    resultAway: RESULT.away,
     groupPts: 3,
-    accent: { border: 'border-green-500', bg: 'bg-green-500/8', text: 'text-green-400', badge: 'bg-green-500/20 text-green-300', scoreBg: 'bg-green-500' },
+    accent: {
+      border: 'border-green-500',
+      bg: 'bg-green-500/8',
+      text: 'text-green-400',
+      badge: 'bg-green-500/20 text-green-300',
+      scoreBg: 'bg-green-500',
+    },
   },
   {
     id: 'correct_winner',
     Icon: Check,
     title: 'Correct Winner',
     desc: 'Right winner or draw — no exact scores match',
-    pickHome: 3, pickAway: 1,
-    resultHome: RESULT.home, resultAway: RESULT.away,
+    pickHome: 3,
+    pickAway: 1,
+    resultHome: RESULT.home,
+    resultAway: RESULT.away,
     groupPts: 2,
-    accent: { border: 'border-blue-500', bg: 'bg-blue-500/8', text: 'text-blue-400', badge: 'bg-blue-500/20 text-blue-300', scoreBg: 'bg-blue-500' },
+    accent: {
+      border: 'border-blue-500',
+      bg: 'bg-blue-500/8',
+      text: 'text-blue-400',
+      badge: 'bg-blue-500/20 text-blue-300',
+      scoreBg: 'bg-blue-500',
+    },
   },
   {
     id: 'partial_wrong',
     Icon: Minus,
     title: 'Partial + Loss',
     desc: 'One score matches but predicted the wrong winner',
-    pickHome: 0, pickAway: 0,
-    resultHome: RESULT.home, resultAway: RESULT.away,
+    pickHome: 0,
+    pickAway: 0,
+    resultHome: RESULT.home,
+    resultAway: RESULT.away,
     groupPts: 1,
-    accent: { border: 'border-violet-500', bg: 'bg-violet-500/8', text: 'text-violet-400', badge: 'bg-violet-500/20 text-violet-300', scoreBg: 'bg-violet-500' },
+    accent: {
+      border: 'border-violet-500',
+      bg: 'bg-violet-500/8',
+      text: 'text-violet-400',
+      badge: 'bg-violet-500/20 text-violet-300',
+      scoreBg: 'bg-violet-500',
+    },
   },
   {
     id: 'miss',
     Icon: X,
     title: 'Miss',
     desc: 'Nothing matches — wrong winner, no scores in common',
-    pickHome: 1, pickAway: 2,
-    resultHome: RESULT.home, resultAway: RESULT.away,
+    pickHome: 1,
+    pickAway: 2,
+    resultHome: RESULT.home,
+    resultAway: RESULT.away,
     groupPts: 0,
-    accent: { border: 'border-red-700', bg: 'bg-red-900/20', text: 'text-red-500', badge: 'bg-red-900/30 text-red-400', scoreBg: 'bg-red-700' },
+    accent: {
+      border: 'border-red-700',
+      bg: 'bg-red-900/20',
+      text: 'text-red-500',
+      badge: 'bg-red-900/30 text-red-400',
+      scoreBg: 'bg-red-700',
+    },
   },
 ]
 
@@ -79,12 +119,20 @@ function winnerLabel(home: number, away: number): string {
   return 'Draw'
 }
 
-function ScoreBox({ value, highlight, scoreBg }: { value: number; highlight: boolean; scoreBg: string }) {
+function ScoreBox({
+  value,
+  highlight,
+  scoreBg,
+}: {
+  value: number
+  highlight: boolean
+  scoreBg: string
+}) {
   return (
     <span
       className={cn(
         'w-9 h-9 rounded-lg flex items-center justify-center text-base font-bold tabular-nums transition-colors',
-        highlight ? `${scoreBg} text-white` : 'bg-zinc-800 text-zinc-400',
+        highlight ? `${scoreBg} text-white` : 'bg-zinc-800 text-zinc-400'
       )}
     >
       {value}
@@ -97,7 +145,7 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
   const pts = groupPts * multiplier
   const homeMatch = pickHome === resultHome
   const awayMatch = pickAway === resultAway
-  const pickWinner  = winnerLabel(pickHome, pickAway)
+  const pickWinner = winnerLabel(pickHome, pickAway)
   const resultWinner = winnerLabel(resultHome, resultAway)
   const winnerMatch = pickWinner === resultWinner
 
@@ -110,8 +158,13 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
             <Icon size={16} className={accent.text} />
             <span className="text-sm font-semibold text-white">{title}</span>
           </div>
-          <span className={cn('text-sm font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0', accent.badge)}>
-            {pts > 0 ? `+${pts} pts` : '0 pts'}
+          <span
+            className={cn(
+              'text-sm font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0',
+              accent.badge
+            )}
+          >
+            {pts > 0 ? `+${pts.toString()} pts` : '0 pts'}
           </span>
         </div>
 
@@ -127,7 +180,9 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
               <span className="text-zinc-600 text-sm font-medium">–</span>
               <ScoreBox value={pickAway} highlight={awayMatch} scoreBg={accent.scoreBg} />
             </div>
-            <span className={cn('text-[10px] font-medium', winnerMatch ? accent.text : 'text-zinc-600')}>
+            <span
+              className={cn('text-[10px] font-medium', winnerMatch ? accent.text : 'text-zinc-600')}
+            >
               {pickWinner}
             </span>
           </div>
@@ -164,7 +219,9 @@ export function RulesPage() {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-zinc-950/95 backdrop-blur border-b border-zinc-800 px-4 py-3 flex items-center gap-3">
         <button
-          onClick={() => router.history.back()}
+          onClick={() => {
+            router.history.back()
+          }}
           className="text-zinc-400 hover:text-white transition-colors p-0.5 -ml-0.5"
         >
           <ArrowLeft size={18} />
@@ -175,13 +232,15 @@ export function RulesPage() {
       <div className="flex-1 px-4 py-4 space-y-4 max-w-lg mx-auto w-full">
         {/* Phase toggle */}
         <div className="flex items-center gap-1.5 bg-zinc-900 rounded-full p-1">
-          {(['group', 'knockout'] as Phase[]).map(p => (
+          {(['group', 'knockout'] as Phase[]).map((p) => (
             <button
               key={p}
-              onClick={() => setPhase(p)}
+              onClick={() => {
+                setPhase(p)
+              }}
               className={cn(
                 'flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-full text-xs font-medium transition-colors',
-                phase === p ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300',
+                phase === p ? 'bg-zinc-700 text-white' : 'text-zinc-500 hover:text-zinc-300'
               )}
             >
               {p === 'knockout' && <Zap size={11} className="text-amber-400" />}
@@ -194,13 +253,15 @@ export function RulesPage() {
           <div className="flex items-start gap-2.5 bg-amber-500/8 border border-amber-500/20 rounded-lg px-3 py-2.5">
             <Zap size={14} className="text-amber-400 flex-shrink-0 mt-0.5" />
             <p className="text-xs text-amber-300/80">
-              All knockout rounds (R32 onward) apply a <span className="font-semibold text-amber-300">×2 multiplier</span>. Same tiers, double the points.
+              All knockout rounds (R32 onward) apply a{' '}
+              <span className="font-semibold text-amber-300">×2 multiplier</span>. Same tiers,
+              double the points.
             </p>
           </div>
         )}
 
         {/* Tier cards */}
-        {TIERS.map(tier => (
+        {TIERS.map((tier) => (
           <TierCard key={tier.id} tier={tier} multiplier={multiplier} />
         ))}
 
