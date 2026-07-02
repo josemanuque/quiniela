@@ -65,7 +65,13 @@ function PrefRow({ icon: Icon, label, sublabel, checked, onChange, disabled }: P
 
 export function NotificationSettings() {
   const { t } = useTranslation()
-  const { state, subscribe, unsubscribe, isPending: subPending } = useSubscribePush()
+  const {
+    state,
+    subscribe,
+    unsubscribe,
+    isPending: subPending,
+    error: subError,
+  } = useSubscribePush()
   const { preferences, savePreferences, isPending: prefPending } = useNotificationPreferences()
 
   if (state === 'unsupported') {
@@ -87,16 +93,19 @@ export function NotificationSettings() {
 
   if (state === 'unsubscribed') {
     return (
-      <button
-        onClick={() => {
-          void subscribe()
-        }}
-        disabled={subPending}
-        className="w-full flex items-center justify-center gap-2 h-10 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium transition-colors"
-      >
-        <Bell size={14} />
-        {subPending ? t('notifications.enabling') : t('notifications.enable')}
-      </button>
+      <div className="space-y-2">
+        <button
+          onClick={() => {
+            void subscribe()
+          }}
+          disabled={subPending}
+          className="w-full flex items-center justify-center gap-2 h-10 rounded-lg bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white text-sm font-medium transition-colors"
+        >
+          <Bell size={14} />
+          {subPending ? t('notifications.enabling') : t('notifications.enable')}
+        </button>
+        {subError && <p className="text-xs text-red-400 text-center">{subError}</p>}
+      </div>
     )
   }
 

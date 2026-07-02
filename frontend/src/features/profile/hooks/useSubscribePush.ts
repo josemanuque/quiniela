@@ -8,6 +8,7 @@ export function useSubscribePush() {
   const queryClient = useQueryClient()
   const [state, setState] = useState<SubscribeState>('unsubscribed')
   const [isPending, setIsPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!notificationService.isSupported()) {
@@ -26,12 +27,19 @@ export function useSubscribePush() {
 
   const subscribe = useCallback(async () => {
     setIsPending(true)
+    setError(null)
     try {
       await notificationService.subscribe()
       setState('subscribed')
       void queryClient.invalidateQueries({ queryKey: ['notification-preferences'] })
-    } catch {
-      if (Notification.permission === 'denied') setState('denied')
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err)
+      console.error('[push] subscribe failed:', msg)
+      if (Notification.permission === 'denied') {
+        setState('denied')
+      } else {
+        setError(msg)
+      }
     } finally {
       setIsPending(false)
     }
@@ -47,5 +55,5 @@ export function useSubscribePush() {
     }
   }, [])
 
-  return { state, subscribe, unsubscribe, isPending }
+  return { state, subscribe, unsubscribe, isPending, error }
 }

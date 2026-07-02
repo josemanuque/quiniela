@@ -14,7 +14,7 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2'
 import webpush from 'npm:web-push@3'
 
-const VAPID_SUBJECT = 'mailto:josemanuque@gmail.com'
+const VAPID_SUBJECT = 'https://quiniela.vercel.ap'
 const VAPID_PUBLIC  = Deno.env.get('VAPID_PUBLIC_KEY')!
 const VAPID_PRIVATE = Deno.env.get('VAPID_PRIVATE_KEY')!
 

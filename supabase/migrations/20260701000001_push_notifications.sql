@@ -34,6 +34,12 @@ CREATE POLICY "users manage own notification preferences"
   USING (auth.uid() = user_id)
   WITH CHECK (auth.uid() = user_id);
 
+-- Explicit grants (Supabase DEFAULT PRIVILEGES don't always cover new tables)
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.push_subscriptions      TO authenticated;
+GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.notification_preferences TO authenticated;
+GRANT ALL ON TABLE public.push_subscriptions      TO service_role;
+GRANT ALL ON TABLE public.notification_preferences TO service_role;
+
 -- updated_at triggers
 CREATE TRIGGER push_subscriptions_updated_at
   BEFORE UPDATE ON public.push_subscriptions
