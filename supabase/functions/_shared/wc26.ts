@@ -7,6 +7,8 @@ export interface WC26Match {
   away_team_id: string
   home_score: string
   away_score: string
+  home_penalty_score?: string
+  away_penalty_score?: string
   group: string
   local_date: string   // "MM/DD/YYYY HH:MM" in venue local time
   finished: string     // "TRUE" | "FALSE"

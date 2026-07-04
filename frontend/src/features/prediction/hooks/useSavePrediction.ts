@@ -6,8 +6,24 @@ export function useSavePrediction(matchId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: ({ homeScore, awayScore }: { homeScore: number; awayScore: number }) =>
-      predictionService.upsertPrediction(matchId, homeScore, awayScore),
+    mutationFn: ({
+      homeScore,
+      awayScore,
+      penaltyHomeScore = null,
+      penaltyAwayScore = null,
+    }: {
+      homeScore: number
+      awayScore: number
+      penaltyHomeScore?: number | null
+      penaltyAwayScore?: number | null
+    }) =>
+      predictionService.upsertPrediction(
+        matchId,
+        homeScore,
+        awayScore,
+        penaltyHomeScore,
+        penaltyAwayScore
+      ),
     onSuccess: (data) => {
       queryClient.setQueryData(queryKeys.myPrediction(matchId), data)
     },

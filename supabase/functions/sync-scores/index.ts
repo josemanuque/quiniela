@@ -46,6 +46,8 @@ Deno.serve(async (_req: Request): Promise<Response> => {
       status: 'upcoming' | 'live' | 'completed'
       home_score: number | null
       away_score: number | null
+      home_penalties: number | null
+      away_penalties: number | null
       kickoff_at: string
     }>()
 
@@ -55,20 +57,25 @@ Deno.serve(async (_req: Request): Promise<Response> => {
       const status    = mapStatus(g)
       const kickoffAt = parseKickoff(g.local_date, g.stadium_id)
 
+      const homePens = g.home_penalty_score ? parseInt(g.home_penalty_score, 10) : null
+      const awayPens = g.away_penalty_score ? parseInt(g.away_penalty_score, 10) : null
+
       apiMap.set(`wc26_match_${g.id}`, {
         status,
-        home_score: status === 'upcoming' ? null : parseInt(g.home_score, 10),
-        away_score: status === 'upcoming' ? null : parseInt(g.away_score, 10),
-        kickoff_at: kickoffAt,
+        home_score:     status === 'upcoming' ? null : parseInt(g.home_score, 10),
+        away_score:     status === 'upcoming' ? null : parseInt(g.away_score, 10),
+        home_penalties: homePens,
+        away_penalties: awayPens,
+        kickoff_at:     kickoffAt,
       })
     }
 
-    // 3. Fetch current DB state for non-completed matches
+    // 3. Fetch current DB state for non-completed matches (completed matches don't change)
     const { data: dbMatches, error: fetchErr } = await supabase
       .from('matches')
-      .select('id, external_id, status, home_score, away_score')
+      .select('id, external_id, status, home_score, away_score, home_penalties, away_penalties')
       .like('external_id', 'wc26_match_%')
-      .neq('status', 'completed')  // completed matches don't change
+      .neq('status', 'completed')
 
     if (fetchErr) throw fetchErr
 
@@ -78,6 +85,8 @@ Deno.serve(async (_req: Request): Promise<Response> => {
       status: string
       home_score: number | null
       away_score: number | null
+      home_penalties: number | null
+      away_penalties: number | null
     }> = []
 
     for (const match of dbMatches ?? []) {
@@ -85,16 +94,20 @@ Deno.serve(async (_req: Request): Promise<Response> => {
       if (!api) continue
 
       const changed =
-        api.status     !== match.status     ||
-        api.home_score !== match.home_score ||
-        api.away_score !== match.away_score
+        api.status         !== match.status         ||
+        api.home_score     !== match.home_score     ||
+        api.away_score     !== match.away_score     ||
+        api.home_penalties !== match.home_penalties ||
+        api.away_penalties !== match.away_penalties
 
       if (changed) {
         toUpdate.push({
-          id:         match.id as string,
-          status:     api.status,
-          home_score: api.home_score,
-          away_score: api.away_score,
+          id:             match.id as string,
+          status:         api.status,
+          home_score:     api.home_score,
+          away_score:     api.away_score,
+          home_penalties: api.home_penalties,
+          away_penalties: api.away_penalties,
         })
       }
     }
@@ -105,7 +118,13 @@ Deno.serve(async (_req: Request): Promise<Response> => {
       const updates = toUpdate.map(m =>
         supabase
           .from('matches')
-          .update({ status: m.status, home_score: m.home_score, away_score: m.away_score })
+          .update({
+            status:         m.status,
+            home_score:     m.home_score,
+            away_score:     m.away_score,
+            home_penalties: m.home_penalties,
+            away_penalties: m.away_penalties,
+          })
           .eq('id', m.id),
       )
       const results = await Promise.all(updates)

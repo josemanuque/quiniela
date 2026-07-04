@@ -5,10 +5,28 @@ import { cn } from '@/lib/utils'
 import { useAuth } from '@/features/auth/hooks/useAuth'
 import { useMyGroups } from '@/features/group/hooks/useMyGroups'
 import { useLeaderboard } from '../hooks/useLeaderboard'
+import { useRoundLeaderboard } from '../hooks/useRoundLeaderboard'
 import { LeaderboardRow } from './LeaderboardRow'
 import { GroupStatsPanel } from './GroupStatsPanel'
+import type { LeaderboardRound } from '../services/leaderboardService'
 
 type Tab = 'projected' | 'confirmed'
+
+interface RoundFilter {
+  key: LeaderboardRound
+  labelKey: string
+}
+
+const ROUND_FILTERS: RoundFilter[] = [
+  { key: 'group_1', labelKey: 'leaderboard.roundR1' },
+  { key: 'group_2', labelKey: 'leaderboard.roundR2' },
+  { key: 'group_3', labelKey: 'leaderboard.roundR3' },
+  { key: 'r32', labelKey: 'leaderboard.roundR32' },
+  { key: 'r16', labelKey: 'leaderboard.roundR16' },
+  { key: 'qf', labelKey: 'leaderboard.roundQF' },
+  { key: 'sf', labelKey: 'leaderboard.roundSF' },
+  { key: 'final', labelKey: 'leaderboard.roundFinal' },
+]
 
 export function LeaderboardPage() {
   const { t } = useTranslation()
@@ -17,13 +35,15 @@ export function LeaderboardPage() {
 
   const [scope, setScope] = useState<string>('global')
   const [tab, setTab] = useState<Tab>('projected')
+  const [roundFilter, setRoundFilter] = useState<LeaderboardRound | null>(null)
 
   const groupId = scope === 'global' ? undefined : scope
   const activeGroup = myGroups?.find((g) => g.id === groupId)
   const { confirmed, projected, hasLiveMatches } = useLeaderboard(groupId)
+  const { data: roundRows, isLoading: roundLoading } = useRoundLeaderboard(roundFilter, groupId)
 
   const activeTab = hasLiveMatches ? tab : 'confirmed'
-  const rows =
+  const allRows =
     activeTab === 'projected'
       ? (projected.data ?? [])
       : (confirmed.data?.map((r) => ({
@@ -32,7 +52,12 @@ export function LeaderboardPage() {
           confirmed_points: 'total_points' in r ? r.total_points : 0,
         })) ?? [])
 
-  const isLoading = activeTab === 'projected' ? projected.isLoading : confirmed.isLoading
+  const isLoading = roundFilter
+    ? roundLoading
+    : activeTab === 'projected'
+      ? projected.isLoading
+      : confirmed.isLoading
+
   const hasGroups = myGroups && myGroups.length > 0
 
   return (
@@ -42,7 +67,7 @@ export function LeaderboardPage() {
         <h1 className="text-white font-semibold text-base">{t('leaderboard.title')}</h1>
       </div>
 
-      {/* Scope selector — Global + one chip per group */}
+      {/* Scope selector */}
       {hasGroups && (
         <div className="relative border-b border-zinc-800">
           <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
@@ -88,8 +113,44 @@ export function LeaderboardPage() {
         </div>
       )}
 
-      {/* Projected / Confirmed tab switcher — only when live matches exist */}
-      {hasLiveMatches && (
+      {/* Jornada filter pills */}
+      <div className="relative border-b border-zinc-800">
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-10 bg-gradient-to-l from-zinc-950 to-transparent z-10" />
+        <div className="flex gap-2 overflow-x-auto scrollbar-none px-4 py-2.5">
+          <button
+            onClick={() => {
+              setRoundFilter(null)
+            }}
+            className={cn(
+              'flex-shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors',
+              roundFilter === null
+                ? 'bg-zinc-600 text-white'
+                : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+            )}
+          >
+            {t('leaderboard.filterAll')}
+          </button>
+          {ROUND_FILTERS.map(({ key, labelKey }) => (
+            <button
+              key={key}
+              onClick={() => {
+                setRoundFilter(key)
+              }}
+              className={cn(
+                'flex-shrink-0 h-7 px-3 rounded-full text-xs font-medium transition-colors',
+                roundFilter === key
+                  ? 'bg-zinc-600 text-white'
+                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+              )}
+            >
+              {t(labelKey)}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Projected / Confirmed tab switcher — only when viewing all + live matches exist */}
+      {!roundFilter && hasLiveMatches && (
         <div className="flex items-center gap-2 px-4 mt-3 max-w-2xl mx-auto w-full">
           <div className="flex items-center gap-1.5 bg-zinc-900 rounded-full p-0.5 flex-1">
             {(['projected', 'confirmed'] as Tab[]).map((tabKey) => (
@@ -120,16 +181,18 @@ export function LeaderboardPage() {
       )}
 
       {/* Column headers */}
-      {!isLoading && rows.length > 0 && (
+      {!isLoading && (roundFilter ? (roundRows ?? []) : allRows).length > 0 && (
         <div className="flex items-center gap-3 px-8 pt-3 pb-1 max-w-2xl mx-auto w-full">
           <span className="w-6" />
           <span className="w-8" />
           <span className="flex-1 text-[10px] text-zinc-600 uppercase tracking-wider font-medium">
             {t('leaderboard.player')}
           </span>
-          <span className="text-[10px] text-zinc-600 uppercase tracking-wider font-medium w-9 text-right">
-            {t('leaderboard.exact')}
-          </span>
+          {!roundFilter && (
+            <span className="text-[10px] text-zinc-600 uppercase tracking-wider font-medium w-9 text-right">
+              {t('leaderboard.exact')}
+            </span>
+          )}
           <span className="text-[10px] text-zinc-600 uppercase tracking-wider font-medium w-8 text-right">
             {t('leaderboard.pts')}
           </span>
@@ -144,7 +207,31 @@ export function LeaderboardPage() {
               <div key={i} className="h-14 bg-zinc-900 rounded-lg animate-pulse" />
             ))}
           </div>
-        ) : rows.length === 0 ? (
+        ) : roundFilter ? (
+          // Per-jornada view
+          !roundRows || roundRows.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-20 gap-4">
+              <div className="bg-zinc-800 rounded-full p-5">
+                <Trophy size={28} className="text-zinc-500" />
+              </div>
+              <p className="text-white font-medium">{t('leaderboard.noRankings')}</p>
+            </div>
+          ) : (
+            roundRows.map((row) => (
+              <LeaderboardRow
+                key={row.user_id}
+                userId={row.user_id}
+                rank={row.rank}
+                displayName={row.display_name}
+                avatarUrl={row.avatar_url}
+                points={row.jornada_pts}
+                isCurrentUser={row.user_id === user?.id}
+                showSub={false}
+                expandable={false}
+              />
+            ))
+          )
+        ) : allRows.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 gap-4">
             <div className="bg-zinc-800 rounded-full p-5">
               <Trophy size={28} className="text-zinc-500" />
@@ -159,7 +246,7 @@ export function LeaderboardPage() {
             </div>
           </div>
         ) : (
-          rows.map((row) => (
+          allRows.map((row) => (
             <LeaderboardRow
               key={row.user_id}
               userId={row.user_id}
@@ -183,8 +270,8 @@ export function LeaderboardPage() {
         )}
       </div>
 
-      {/* Group stats — trajectory + exact count charts */}
-      {groupId && activeGroup && (
+      {/* Stats panel — only show when viewing full leaderboard (no jornada filter) */}
+      {!roundFilter && (
         <GroupStatsPanel
           groupId={groupId}
           confirmedRows={confirmed.data ?? []}

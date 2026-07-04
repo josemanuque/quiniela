@@ -7,7 +7,7 @@ import { ExactCountChart } from './ExactCountChart'
 import type { GlobalLeaderboardRow } from '../services/leaderboardService'
 
 interface Props {
-  groupId: string
+  groupId?: string
   confirmedRows: GlobalLeaderboardRow[]
   currentUserId: string | undefined
 }
@@ -17,11 +17,14 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
   const [granularity, setGranularity] = useState<Granularity>('round')
   const { data: trajectoryRows, isLoading } = useGroupTrajectory(groupId, granularity)
 
-  const GRANULARITIES: { key: Granularity; label: string }[] = [
-    { key: 'round', label: t('granularity.round') },
-    { key: 'day', label: t('granularity.day') },
-    { key: 'match', label: t('granularity.match') },
-  ]
+  // day/match granularity only makes sense scoped to a group
+  const GRANULARITIES: { key: Granularity; label: string }[] = groupId
+    ? [
+        { key: 'round', label: t('granularity.round') },
+        { key: 'day', label: t('granularity.day') },
+        { key: 'match', label: t('granularity.match') },
+      ]
+    : [{ key: 'round', label: t('granularity.round') }]
 
   const hasExacts = confirmedRows.some((r) => r.exact_count > 0)
 
@@ -33,24 +36,26 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
           <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider">
             {t('leaderboard.trajectoryTitle')}
           </h3>
-          <div className="flex gap-0.5 bg-zinc-900 rounded-full p-0.5">
-            {GRANULARITIES.map((g) => (
-              <button
-                key={g.key}
-                onClick={() => {
-                  setGranularity(g.key)
-                }}
-                className={cn(
-                  'px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors',
-                  granularity === g.key
-                    ? 'bg-zinc-700 text-white'
-                    : 'text-zinc-500 hover:text-zinc-300'
-                )}
-              >
-                {g.label}
-              </button>
-            ))}
-          </div>
+          {GRANULARITIES.length > 1 && (
+            <div className="flex gap-0.5 bg-zinc-900 rounded-full p-0.5">
+              {GRANULARITIES.map((g) => (
+                <button
+                  key={g.key}
+                  onClick={() => {
+                    setGranularity(g.key)
+                  }}
+                  className={cn(
+                    'px-2.5 py-1 rounded-full text-[11px] font-medium transition-colors',
+                    granularity === g.key
+                      ? 'bg-zinc-700 text-white'
+                      : 'text-zinc-500 hover:text-zinc-300'
+                  )}
+                >
+                  {g.label}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {isLoading ? (
@@ -66,8 +71,8 @@ export function GroupStatsPanel({ groupId, confirmedRows, currentUserId }: Props
         )}
       </div>
 
-      {/* Exact score comparison */}
-      {(hasExacts || confirmedRows.length > 0) && (
+      {/* Exact score comparison — only meaningful inside a group */}
+      {groupId && (hasExacts || confirmedRows.length > 0) && (
         <div>
           <h3 className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">
             {t('leaderboard.exactScoresTitle')}

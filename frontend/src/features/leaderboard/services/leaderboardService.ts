@@ -38,6 +38,17 @@ export interface LiveBreakdownRow {
 
 export type Granularity = 'round' | 'day' | 'match'
 
+export type LeaderboardRound =
+  'group_1' | 'group_2' | 'group_3' | 'r32' | 'r16' | 'qf' | 'sf' | 'final'
+
+export interface RoundLeaderboardRow {
+  user_id: string
+  display_name: string
+  avatar_url: string | null
+  jornada_pts: number
+  rank: number
+}
+
 export interface TrajectoryRow {
   user_id: string
   display_name: string
@@ -88,6 +99,26 @@ export const leaderboardService = {
     const { data, error } = await supabase.rpc('get_group_points_trajectory', {
       p_group_id: groupId,
       p_granularity: granularity,
+    })
+    if (error) throw error
+    return data
+  },
+
+  async getRoundTrajectory(groupId?: string): Promise<TrajectoryRow[]> {
+    const { data, error } = await supabase.rpc('get_jornada_trajectory', {
+      p_group_id: groupId ?? null,
+    })
+    if (error) throw error
+    return data
+  },
+
+  async getRoundLeaderboard(
+    round: LeaderboardRound,
+    groupId?: string
+  ): Promise<RoundLeaderboardRow[]> {
+    const { data, error } = await supabase.rpc('get_jornada_leaderboard', {
+      p_jornada: round,
+      p_group_id: groupId ?? null,
     })
     if (error) throw error
     return data

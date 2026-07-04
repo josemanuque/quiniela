@@ -5,7 +5,9 @@ export const predictionService = {
   async upsertPrediction(
     matchId: string,
     homeScore: number,
-    awayScore: number
+    awayScore: number,
+    penaltyHomeScore: number | null = null,
+    penaltyAwayScore: number | null = null
   ): Promise<Prediction> {
     const {
       data: { user },
@@ -15,7 +17,14 @@ export const predictionService = {
     const { data, error } = await supabase
       .from('predictions')
       .upsert(
-        { user_id: user.id, match_id: matchId, home_score: homeScore, away_score: awayScore },
+        {
+          user_id: user.id,
+          match_id: matchId,
+          home_score: homeScore,
+          away_score: awayScore,
+          penalty_home_score: penaltyHomeScore,
+          penalty_away_score: penaltyAwayScore,
+        },
         { onConflict: 'user_id,match_id' }
       )
       .select()

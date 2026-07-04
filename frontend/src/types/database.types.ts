@@ -66,6 +66,36 @@ export type Database = {
         }
         Relationships: []
       }
+      historical_points: {
+        Row: {
+          competition_id: string
+          created_at: string
+          id: string
+          jornada: string
+          points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          competition_id: string
+          created_at?: string
+          id?: string
+          jornada: string
+          points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          competition_id?: string
+          created_at?: string
+          id?: string
+          jornada?: string
+          points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       group_members: {
         Row: {
           created_at: string
@@ -278,6 +308,8 @@ export type Database = {
           id: string
           locked_at: string | null
           match_id: string
+          penalty_away_score: number | null
+          penalty_home_score: number | null
           points_earned: number | null
           tier: string | null
           updated_at: string
@@ -290,6 +322,8 @@ export type Database = {
           id?: string
           locked_at?: string | null
           match_id: string
+          penalty_away_score?: number | null
+          penalty_home_score?: number | null
           points_earned?: number | null
           tier?: string | null
           updated_at?: string
@@ -302,6 +336,8 @@ export type Database = {
           id?: string
           locked_at?: string | null
           match_id?: string
+          penalty_away_score?: number | null
+          penalty_home_score?: number | null
           points_earned?: number | null
           tier?: string | null
           updated_at?: string
@@ -388,6 +424,8 @@ export type Database = {
           id: string
           partial_correct_winner_points: number
           partial_wrong_winner_points: number
+          penalty_exact_points: number
+          penalty_winner_points: number
           phase: Database['public']['Enums']['round_phase']
           phase_multiplier: number
           updated_at: string
@@ -400,6 +438,8 @@ export type Database = {
           id?: string
           partial_correct_winner_points?: number
           partial_wrong_winner_points?: number
+          penalty_exact_points?: number
+          penalty_winner_points?: number
           phase: Database['public']['Enums']['round_phase']
           phase_multiplier?: number
           updated_at?: string
@@ -412,6 +452,8 @@ export type Database = {
           id?: string
           partial_correct_winner_points?: number
           partial_wrong_winner_points?: number
+          penalty_exact_points?: number
+          penalty_winner_points?: number
           phase?: Database['public']['Enums']['round_phase']
           phase_multiplier?: number
           updated_at?: string
@@ -615,6 +657,28 @@ export type Database = {
         Returns: number
       }
       shares_group_with: { Args: { p_other_user_id: string }; Returns: boolean }
+      get_jornada_trajectory: {
+        Args: { p_group_id?: string | null }
+        Returns: {
+          user_id: string
+          display_name: string
+          avatar_url: string | null
+          x_sort: string
+          x_label: string
+          period_points: number
+          cumulative_points: number
+        }[]
+      }
+      get_jornada_leaderboard: {
+        Args: { p_jornada: string; p_group_id?: string | null }
+        Returns: {
+          user_id: string
+          display_name: string
+          avatar_url: string | null
+          jornada_pts: number
+          rank: number
+        }[]
+      }
     }
     Enums: {
       competition_status: 'upcoming' | 'active' | 'completed'

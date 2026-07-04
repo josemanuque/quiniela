@@ -36,7 +36,9 @@
     "yourPick": "Your pick:",
     "predict": "Predict",
     "pts": "pts",
-    "proj": "proj"
+    "proj": "proj",
+    "pens": "Pens",
+    "pensBonus": "+1 winner · +2 exact"
   },
   "group": {
     "title": "Groups",
@@ -88,7 +90,17 @@
     "yourBarHighlighted": "Your bar is highlighted in amber",
     "noScoredYet": "No scored predictions yet",
     "exactCount_one": "{{count}} exact",
-    "exactCount_other": "{{count}} exacts"
+    "exactCount_other": "{{count}} exacts",
+    "filterAll": "All",
+    "roundR1": "R1",
+    "roundR2": "R2",
+    "roundR3": "R3",
+    "roundR32": "R32",
+    "roundR16": "R16",
+    "roundQF": "QF",
+    "roundSF": "SF",
+    "roundFinal": "Final",
+    "roundFilterTitle": "Round"
   },
   "profile": {
     "title": "Profile",

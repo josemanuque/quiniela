@@ -36,7 +36,9 @@
     "yourPick": "Tu predicción:",
     "predict": "Predecir",
     "pts": "pts",
-    "proj": "proy."
+    "proj": "proy.",
+    "pens": "Pens",
+    "pensBonus": "+1 ganador · +2 exacto"
   },
   "group": {
     "title": "Grupos",
@@ -88,7 +90,17 @@
     "yourBarHighlighted": "Tu barra está destacada en ámbar",
     "noScoredYet": "Sin predicciones puntuadas aún",
     "exactCount_one": "{{count}} exacto",
-    "exactCount_other": "{{count}} exactos"
+    "exactCount_other": "{{count}} exactos",
+    "filterAll": "Todo",
+    "roundR1": "J1",
+    "roundR2": "J2",
+    "roundR3": "J3",
+    "roundR32": "R32",
+    "roundR16": "R16",
+    "roundQF": "QF",
+    "roundSF": "SF",
+    "roundFinal": "Final",
+    "roundFilterTitle": "Jornada"
   },
   "profile": {
     "title": "Perfil",
