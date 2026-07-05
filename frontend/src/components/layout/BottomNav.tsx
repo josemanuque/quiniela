@@ -35,11 +35,8 @@ export function BottomNav() {
           )
         })}
       </div>
-      {/* 5px buffer + home indicator area on iOS/Android */}
-      <div
-        className="bg-zinc-950/95"
-        style={{ height: 'calc(5px + env(safe-area-inset-bottom))' }}
-      />
+      {/* Home indicator area on iOS / gesture bar on Android */}
+      <div className="bg-zinc-950/95" style={{ height: 'env(safe-area-inset-bottom)' }} />
     </nav>
   )
 }

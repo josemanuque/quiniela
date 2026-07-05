@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, Link } from '@tanstack/react-router'
 import { ChevronLeft, Lock } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
@@ -173,14 +173,21 @@ function PredictionRow({ pred, isMe, liveScore, isLive }: PredictionRowProps) {
       </span>
 
       {/* Pick */}
-      <span
-        className={cn(
-          'text-sm tabular-nums font-semibold',
-          displayTier ? TIER_TEXT_CLASSES[displayTier] : 'text-zinc-300'
+      <div className="flex flex-col items-end shrink-0">
+        <span
+          className={cn(
+            'text-sm tabular-nums font-semibold',
+            displayTier ? TIER_TEXT_CLASSES[displayTier] : 'text-zinc-300'
+          )}
+        >
+          {pred.home_score} – {pred.away_score}
+        </span>
+        {pred.penalty_home_score != null && pred.penalty_away_score != null && (
+          <span className="text-[10px] text-zinc-500 tabular-nums leading-tight">
+            {t('prediction.pens')} {pred.penalty_home_score}–{pred.penalty_away_score}
+          </span>
         )}
-      >
-        {pred.home_score} – {pred.away_score}
-      </span>
+      </div>
 
       {/* Tier badge */}
       {displayTier && (
@@ -222,7 +229,17 @@ export function MatchDetailPage() {
   const { data: predictions = [], isLoading } = useMatchPredictions(matchId)
 
   const [scope, setScope] = useState<string>(ALL_SCOPE)
+  const [scopeInitialized, setScopeInitialized] = useState(false)
   const { data: scopeMembers } = useGroupMembers(scope !== ALL_SCOPE ? scope : '')
+
+  useEffect(() => {
+    if (!scopeInitialized && myGroups) {
+      /* eslint-disable react-hooks/set-state-in-effect */
+      if (myGroups.length > 0) setScope(myGroups[0].id)
+      setScopeInitialized(true)
+      /* eslint-enable react-hooks/set-state-in-effect */
+    }
+  }, [myGroups, scopeInitialized])
 
   const isLive = match?.status === 'live'
   const isCompleted = match?.status === 'completed'

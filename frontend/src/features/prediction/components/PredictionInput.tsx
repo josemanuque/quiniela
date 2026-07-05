@@ -224,36 +224,37 @@ export function PredictionInput({ match }: Props) {
 
       {/* Penalty shootout row — only for knockout draws */}
       {showPenalty && (
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-amber-500/70 uppercase tracking-wide">
+        <div className="relative flex items-center justify-center w-full">
+          <span className="absolute left-0 text-[10px] text-amber-500/70 uppercase tracking-wide">
             {t('prediction.pens')}
           </span>
-          <input
-            type="number"
-            min={0}
-            max={30}
-            value={penHome}
-            onChange={(e) => {
-              setPenHome(e.target.value)
-            }}
-            onBlur={handleBlur}
-            placeholder="–"
-            className={PEN_INPUT_CLASS}
-          />
-          <span className="text-zinc-600 text-xs">–</span>
-          <input
-            type="number"
-            min={0}
-            max={30}
-            value={penAway}
-            onChange={(e) => {
-              setPenAway(e.target.value)
-            }}
-            onBlur={handleBlur}
-            placeholder="–"
-            className={PEN_INPUT_CLASS}
-          />
-          <span className="text-[10px] text-zinc-600">{t('prediction.pensBonus')}</span>
+          <div className="flex items-center gap-2">
+            <input
+              type="number"
+              min={0}
+              max={30}
+              value={penHome}
+              onChange={(e) => {
+                setPenHome(e.target.value)
+              }}
+              onBlur={handleBlur}
+              placeholder="–"
+              className={PEN_INPUT_CLASS}
+            />
+            <span className="text-zinc-600 text-xs">–</span>
+            <input
+              type="number"
+              min={0}
+              max={30}
+              value={penAway}
+              onChange={(e) => {
+                setPenAway(e.target.value)
+              }}
+              onBlur={handleBlur}
+              placeholder="–"
+              className={PEN_INPUT_CLASS}
+            />
+          </div>
         </div>
       )}
     </div>

@@ -11,7 +11,7 @@ export function MobileLayout() {
         <DesktopSidebar />
         <div className="flex flex-col flex-1 min-w-0 md:pl-60">
           <AppHeader />
-          <main className="flex-1 overflow-y-auto pb-[calc(4rem+5px+env(safe-area-inset-bottom))] md:pb-0">
+          <main className="flex-1 overflow-y-auto pb-[calc(4rem+env(safe-area-inset-bottom))] md:pb-0">
             <Outlet />
           </main>
           <BottomNav />
