@@ -22,8 +22,10 @@ webpush.setVapidDetails(VAPID_SUBJECT, VAPID_PUBLIC, VAPID_PRIVATE)
 interface MatchRow {
   id: string
   kickoff_at: string
-  home_team: { name: string }
-  away_team: { name: string }
+  home_team: { name: string } | null
+  away_team: { name: string } | null
+  home_team_label: string | null
+  away_team_label: string | null
 }
 
 interface SubRow {
@@ -46,13 +48,15 @@ async function getMatchesInWindow(
 
   const { data, error } = await supabase
     .from('matches')
-    .select('id, kickoff_at, home_team:teams!home_team_id(name), away_team:teams!away_team_id(name)')
+    .select('id, kickoff_at, home_team_label, away_team_label, home_team:teams!home_team_id(name), away_team:teams!away_team_id(name)')
     .eq('status', 'upcoming')
     .gte('kickoff_at', from)
     .lte('kickoff_at', to)
 
   if (error) throw error
-  return (data ?? []) as unknown as MatchRow[]
+  // Skip TBD matches where no team name can be derived — nothing to predict yet
+  const rows = (data ?? []) as unknown as MatchRow[]
+  return rows.filter((m) => (m.home_team ?? m.home_team_label) && (m.away_team ?? m.away_team_label))
 }
 
 async function getSubscribersForMatch(
@@ -238,10 +242,12 @@ Deno.serve(async (_req: Request): Promise<Response> => {
     results.pre_5m.matches = matches5m.length
     for (const match of matches5m) {
       const subs = await getSubscribersForMatch(supabase, match.id, 'pre_5m')
+      const home5 = match.home_team?.name ?? match.home_team_label ?? '?'
+      const away5 = match.away_team?.name ?? match.away_team_label ?? '?'
       await Promise.all(
         subs.map((s) =>
           sendPush(s.subscription, {
-            title: `⏱️ ${match.home_team.name} vs ${match.away_team.name}`,
+            title: `⏱️ ${home5} vs ${away5}`,
             body:  'Kickoff in 5 minutes — submit your pick now!',
             url:   '/app/matches',
             tag:   `pre5m-${match.id}`,
@@ -256,10 +262,12 @@ Deno.serve(async (_req: Request): Promise<Response> => {
     results.pre_1h.matches = matches1h.length
     for (const match of matches1h) {
       const subs = await getSubscribersForMatch(supabase, match.id, 'pre_1h')
+      const home1h = match.home_team?.name ?? match.home_team_label ?? '?'
+      const away1h = match.away_team?.name ?? match.away_team_label ?? '?'
       await Promise.all(
         subs.map((s) =>
           sendPush(s.subscription, {
-            title: `🎯 ${match.home_team.name} vs ${match.away_team.name}`,
+            title: `🎯 ${home1h} vs ${away1h}`,
             body:  'Pick your score — match starts in 1 hour!',
             url:   '/app/matches',
             tag:   `pre1h-${match.id}`,

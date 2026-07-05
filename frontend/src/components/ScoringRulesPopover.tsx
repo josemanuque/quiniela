@@ -1,4 +1,4 @@
-import { Info, Zap, ChevronRight } from 'lucide-react'
+import { Info, Zap, ChevronRight, Target } from 'lucide-react'
 import { Link } from '@tanstack/react-router'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
@@ -20,14 +20,13 @@ interface Props {
   align?: 'start' | 'center' | 'end'
 }
 
-export function ScoringRulesPopover({ size = 14, align = 'end' }: Props) {
+export function ScoringRulesPopover({ size = 16, align = 'end' }: Props) {
   const { t } = useTranslation()
   const tierLabels = useTierLabels()
 
   return (
     <Popover>
       <PopoverTrigger asChild>
-        {/* stopPropagation prevents click bubbling when inside clickable cards */}
         <button
           onClick={(e) => {
             e.stopPropagation()
@@ -40,7 +39,7 @@ export function ScoringRulesPopover({ size = 14, align = 'end' }: Props) {
       </PopoverTrigger>
 
       <PopoverContent
-        className="w-52 bg-zinc-900 border-zinc-700 p-3 shadow-xl"
+        className="w-56 bg-zinc-900 border-zinc-700 p-3 shadow-xl"
         align={align}
         sideOffset={6}
       >
@@ -59,9 +58,28 @@ export function ScoringRulesPopover({ size = 14, align = 'end' }: Props) {
           ))}
         </div>
 
+        {/* ×2 knockout multiplier */}
         <div className="mt-2.5 pt-2 border-t border-zinc-700/60 flex items-center gap-1.5">
           <Zap size={11} className="text-amber-400 flex-shrink-0" />
           <p className="text-[10px] text-zinc-500">{t('scoring.x2Note')}</p>
+        </div>
+
+        {/* Penalty bonus */}
+        <div className="mt-2 pt-2 border-t border-zinc-700/60">
+          <div className="flex items-center gap-1.5 mb-1.5">
+            <Target size={11} className="text-amber-400 flex-shrink-0" />
+            <p className="text-[10px] text-zinc-400 font-medium">{t('scoring.penBonus')}</p>
+          </div>
+          <div className="space-y-1 ml-[15px]">
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-zinc-500">{t('scoring.penWinner')}</span>
+              <span className="text-[10px] font-semibold text-amber-400 tabular-nums">+1</span>
+            </div>
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] text-zinc-500">{t('scoring.penExact')}</span>
+              <span className="text-[10px] font-semibold text-amber-400 tabular-nums">+2</span>
+            </div>
+          </div>
         </div>
 
         <Link

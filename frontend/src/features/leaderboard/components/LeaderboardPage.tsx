@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Trophy, Star } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
@@ -34,8 +34,19 @@ export function LeaderboardPage() {
   const { data: myGroups } = useMyGroups()
 
   const [scope, setScope] = useState<string>('global')
+  const [scopeInitialized, setScopeInitialized] = useState(false)
   const [tab, setTab] = useState<Tab>('projected')
   const [roundFilter, setRoundFilter] = useState<LeaderboardRound | null>(null)
+
+  // Auto-select first private group on initial load
+  useEffect(() => {
+    if (!scopeInitialized && myGroups !== undefined) {
+      /* eslint-disable react-hooks/set-state-in-effect */
+      if (myGroups.length > 0) setScope(myGroups[0].id)
+      setScopeInitialized(true)
+      /* eslint-enable react-hooks/set-state-in-effect */
+    }
+  }, [myGroups, scopeInitialized])
 
   const groupId = scope === 'global' ? undefined : scope
   const activeGroup = myGroups?.find((g) => g.id === groupId)
@@ -167,7 +178,7 @@ export function LeaderboardPage() {
                 )}
               >
                 {tabKey === 'projected' ? (
-                  <span className="flex items-center gap-1.5">
+                  <span className="flex items-center justify-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                     {t('leaderboard.projected')}
                   </span>

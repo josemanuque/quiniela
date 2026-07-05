@@ -224,15 +224,18 @@ export type Database = {
         Row: {
           away_penalties: number | null
           away_score: number | null
-          away_team_id: string
+          away_team_id: string | null
+          away_team_label: string | null
           competition_id: string
           created_at: string
           external_id: string | null
           home_penalties: number | null
           home_score: number | null
-          home_team_id: string
+          home_team_id: string | null
+          home_team_label: string | null
           id: string
           kickoff_at: string
+          matchday: number | null
           round_id: string
           status: Database['public']['Enums']['match_status']
           updated_at: string
@@ -240,15 +243,18 @@ export type Database = {
         Insert: {
           away_penalties?: number | null
           away_score?: number | null
-          away_team_id: string
+          away_team_id?: string | null
+          away_team_label?: string | null
           competition_id: string
           created_at?: string
           external_id?: string | null
           home_penalties?: number | null
           home_score?: number | null
-          home_team_id: string
+          home_team_id?: string | null
+          home_team_label?: string | null
           id?: string
           kickoff_at: string
+          matchday?: number | null
           round_id: string
           status?: Database['public']['Enums']['match_status']
           updated_at?: string
@@ -256,15 +262,18 @@ export type Database = {
         Update: {
           away_penalties?: number | null
           away_score?: number | null
-          away_team_id?: string
+          away_team_id?: string | null
+          away_team_label?: string | null
           competition_id?: string
           created_at?: string
           external_id?: string | null
           home_penalties?: number | null
           home_score?: number | null
-          home_team_id?: string
+          home_team_id?: string | null
+          home_team_label?: string | null
           id?: string
           kickoff_at?: string
+          matchday?: number | null
           round_id?: string
           status?: Database['public']['Enums']['match_status']
           updated_at?: string

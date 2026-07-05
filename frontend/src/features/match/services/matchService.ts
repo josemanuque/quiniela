@@ -60,4 +60,19 @@ export const matchService = {
     if (error) throw error
     return data
   },
+
+  async getGroupStageMatchesByMatchday(
+    competitionId: string,
+    matchday: 1 | 2 | 3
+  ): Promise<MatchWithTeams[]> {
+    const { data, error } = await supabase
+      .from('matches')
+      .select(MATCH_SELECT)
+      .eq('competition_id', competitionId)
+      .eq('matchday', matchday)
+      .order('kickoff_at', { ascending: true })
+
+    if (error) throw error
+    return data
+  },
 }

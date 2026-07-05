@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils'
 import type { Round } from '@/types/domain.types'
 import { getRoundTabLabel } from '../utils/roundUtils'
 import { NOW_ROUND_ID } from '../hooks/useNowMatches'
+import type { GroupMatchdayId } from '../utils/matchdayUtils'
 
 interface RoundTabsProps {
   rounds: Round[]
@@ -60,29 +61,58 @@ export function RoundTabs({ rounds, selectedRoundId, onSelect }: RoundTabsProps)
           {t('match.now')}
         </button>
 
-        {rounds.map((round) => {
-          const isActive = round.id === selectedRoundId
-          const label = getRoundTabLabel(round.phase, round.name)
+        {/* Group stage: show R1 / R2 / R3 instead of individual A–L pills */}
+        {rounds.some((r) => r.phase === 'group') && (
+          <>
+            {([1, 2, 3] as const).map((md) => {
+              const id = `group_md_${String(md)}` as GroupMatchdayId
+              const isActive = selectedRoundId === id
+              return (
+                <button
+                  key={id}
+                  role="tab"
+                  aria-selected={isActive}
+                  onClick={() => {
+                    onSelect(id)
+                  }}
+                  className={cn(
+                    'flex-shrink-0 h-8 px-3.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+                    isActive
+                      ? 'bg-emerald-500 text-white'
+                      : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                  )}
+                >
+                  {t(`match.groupMatchday${String(md)}`)}
+                </button>
+              )
+            })}
+          </>
+        )}
 
-          return (
-            <button
-              key={round.id}
-              role="tab"
-              aria-selected={isActive}
-              onClick={() => {
-                onSelect(round.id)
-              }}
-              className={cn(
-                'flex-shrink-0 h-8 px-3.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
-                isActive
-                  ? 'bg-emerald-500 text-white'
-                  : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
-              )}
-            >
-              {label}
-            </button>
-          )
-        })}
+        {/* Knockout rounds */}
+        {rounds
+          .filter((r) => r.phase !== 'group')
+          .map((round) => {
+            const isActive = round.id === selectedRoundId
+            return (
+              <button
+                key={round.id}
+                role="tab"
+                aria-selected={isActive}
+                onClick={() => {
+                  onSelect(round.id)
+                }}
+                className={cn(
+                  'flex-shrink-0 h-8 px-3.5 rounded-full text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500',
+                  isActive
+                    ? 'bg-emerald-500 text-white'
+                    : 'bg-zinc-800 text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200'
+                )}
+              >
+                {getRoundTabLabel(round.phase, round.name)}
+              </button>
+            )
+          })}
       </div>
     </div>
   )

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { Lock, Check } from 'lucide-react'
+import { toast } from 'sonner'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import type { MatchWithTeams, PredictionTier, RoundPhase } from '@/types/domain.types'
@@ -40,11 +41,12 @@ const PEN_INPUT_CLASS =
 export function PredictionInput({ match }: Props) {
   const { t } = useTranslation()
   const { user } = useAuth()
-  const editable = isMatchEditable(match.kickoff_at)
+  const editable =
+    isMatchEditable(match.kickoff_at) && match.home_team !== null && match.away_team !== null
   const isKnockout = KNOCKOUT_PHASES.includes(match.round.phase)
 
   const { data: prediction } = useMyPrediction(match.id)
-  const { mutate: save, isSuccess } = useSavePrediction(match.id)
+  const { mutate: saveRaw, isSuccess } = useSavePrediction(match.id)
   const { data: scoringConfigs } = useScoringConfig(match.round.competition_id)
 
   const [home, setHome] = useState('')
@@ -84,6 +86,20 @@ export function PredictionInput({ match }: Props) {
       penaltyHomeScore: hasPenalty ? ph : null,
       penaltyAwayScore: hasPenalty ? pa : null,
     }
+  }
+
+  function save(args: ReturnType<typeof buildSaveArgs>) {
+    const homeName = match.home_team?.short_name ?? match.home_team_label ?? '?'
+    const awayName = match.away_team?.short_name ?? match.away_team_label ?? '?'
+    saveRaw(args, {
+      onSuccess: () => {
+        toast.success(`${homeName} vs ${awayName}`, {
+          description: t('prediction.saved'),
+          duration: 2000,
+          id: `pred-${match.id}`,
+        })
+      },
+    })
   }
 
   function handleBlur() {

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useRouter } from '@tanstack/react-router'
-import { ArrowLeft, Star, CheckCheck, Check, Minus, X, Zap } from 'lucide-react'
+import { ArrowLeft, Star, CheckCheck, Check, Minus, X, Zap, Target } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 
@@ -210,7 +210,7 @@ function TierCard({ tier, multiplier }: { tier: Tier; multiplier: number }) {
 export function RulesPage() {
   const { t } = useTranslation()
   const router = useRouter()
-  const [phase, setPhase] = useState<Phase>('group')
+  const [phase, setPhase] = useState<Phase>('knockout')
   const multiplier = phase === 'group' ? 1 : 2
 
   return (
@@ -259,6 +259,34 @@ export function RulesPage() {
         {TIERS.map((tier) => (
           <TierCard key={tier.id} tier={tier} multiplier={multiplier} />
         ))}
+
+        {/* Penalty bonus — knockout only */}
+        {phase === 'knockout' && (
+          <div className="rounded-xl border-l-4 border-amber-500 bg-amber-500/8 overflow-hidden">
+            <div className="px-4 pt-4 pb-4">
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-center gap-2.5">
+                  <Target size={16} className="text-amber-400" />
+                  <span className="text-sm font-semibold text-white">{t('scoring.penBonus')}</span>
+                </div>
+                <span className="text-sm font-bold tabular-nums px-2 py-0.5 rounded-full flex-shrink-0 bg-amber-500/20 text-amber-300">
+                  +1 / +2
+                </span>
+              </div>
+              <p className="text-xs text-zinc-500 ml-[26px] mb-3">{t('rules.penBonusDesc')}</p>
+              <div className="ml-[26px] space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-zinc-400">{t('scoring.penWinner')}</span>
+                  <span className="text-xs font-bold text-amber-400 tabular-nums">+1 pt</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs text-zinc-400">{t('scoring.penExact')}</span>
+                  <span className="text-xs font-bold text-amber-400 tabular-nums">+2 pts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Footer note */}
         <p className="text-[11px] text-zinc-600 text-center pb-2">{t('rules.tiersNote')}</p>

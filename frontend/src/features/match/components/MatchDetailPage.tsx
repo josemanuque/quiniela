@@ -33,10 +33,18 @@ function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>
       <div className="flex items-center justify-between gap-2">
         {/* Home */}
         <div className="flex-1 flex flex-col items-center gap-1.5">
-          <TeamFlag flagUrl={match.home_team.flag_url} name={match.home_team.name} size="lg" />
-          <span className="text-xs font-medium text-zinc-300 text-center leading-tight">
-            {match.home_team.short_name}
-          </span>
+          {match.home_team ? (
+            <>
+              <TeamFlag flagUrl={match.home_team.flag_url} name={match.home_team.name} size="lg" />
+              <span className="text-xs font-medium text-zinc-300 text-center leading-tight">
+                {match.home_team.short_name}
+              </span>
+            </>
+          ) : (
+            <span className="text-xs text-zinc-500 text-center leading-tight">
+              {match.home_team_label ?? '?'}
+            </span>
+          )}
         </div>
 
         {/* Score / time */}
@@ -77,10 +85,18 @@ function MatchHeader({ match }: { match: NonNullable<ReturnType<typeof useMatch>
 
         {/* Away */}
         <div className="flex-1 flex flex-col items-center gap-1.5">
-          <TeamFlag flagUrl={match.away_team.flag_url} name={match.away_team.name} size="lg" />
-          <span className="text-xs font-medium text-zinc-300 text-center leading-tight">
-            {match.away_team.short_name}
-          </span>
+          {match.away_team ? (
+            <>
+              <TeamFlag flagUrl={match.away_team.flag_url} name={match.away_team.name} size="lg" />
+              <span className="text-xs font-medium text-zinc-300 text-center leading-tight">
+                {match.away_team.short_name}
+              </span>
+            </>
+          ) : (
+            <span className="text-xs text-zinc-500 text-center leading-tight">
+              {match.away_team_label ?? '?'}
+            </span>
+          )}
         </div>
       </div>
     </div>

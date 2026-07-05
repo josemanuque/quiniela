@@ -29,6 +29,9 @@
     "noPredictions": "No predictions to show",
     "trySwitchingToEveryone": "Try switching to Everyone",
     "roundsAriaLabel": "Tournament rounds",
+    "groupMatchday1": "R1",
+    "groupMatchday2": "R2",
+    "groupMatchday3": "R3",
     "liveIndicator": "live"
   },
   "prediction": {
@@ -38,7 +41,8 @@
     "pts": "pts",
     "proj": "proj",
     "pens": "Pens",
-    "pensBonus": "+1 winner · +2 exact"
+    "pensBonus": "+1 winner · +2 exact",
+    "saved": "Prediction saved"
   },
   "group": {
     "title": "Groups",
@@ -136,6 +140,7 @@
     "result": "Result",
     "knockoutNote": "All knockout rounds (R32 onward) apply a ×2 multiplier. Same tiers, double the points.",
     "tiersNote": "Tiers are evaluated top-down — exact score takes precedence over partial matches.",
+    "penBonusDesc": "If you predicted a draw and the match goes to penalties, you can earn a bonus on top of your regular points.",
     "tier": {
       "exact": { "title": "Exact Score", "desc": "Predicted the exact final score for both teams" },
       "partial_correct": {
@@ -157,7 +162,10 @@
     "title": "Scoring Rules",
     "ariaLabel": "Scoring rules",
     "x2Note": "×2 points in knockout rounds",
-    "fullRules": "Full scoring rules"
+    "fullRules": "Full scoring rules",
+    "penBonus": "Penalty bonus (knockout draw)",
+    "penWinner": "Correct winner",
+    "penExact": "Exact shootout"
   },
   "tier": {
     "exact": "Exact",
@@ -185,6 +193,11 @@
     "pre1h": "1-hour reminder",
     "pre1hSub": "1 hour before a match with a missing prediction",
     "pre5m": "5-minute reminder",
-    "pre5mSub": "Final call — 5 minutes before kickoff"
+    "pre5mSub": "Final call — 5 minutes before kickoff",
+    "iosTitle": "Add to Home Screen first",
+    "iosBody": "Push notifications on iOS only work when the app is installed. Open this page in Safari, then:",
+    "iosStep1": "Tap the Share button",
+    "iosStep2": "Tap \"Add to Home Screen\"",
+    "iosStep3": "Open Quiniela from your Home Screen"
   }
 }

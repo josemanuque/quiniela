@@ -1,8 +1,62 @@
-import { Bell, BellOff, Calendar, Clock, Timer } from 'lucide-react'
+import { Bell, BellOff, Calendar, Clock, Timer, Share, Plus } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { cn } from '@/lib/utils'
 import { useSubscribePush } from '../hooks/useSubscribePush'
 import { useNotificationPreferences } from '../hooks/useNotificationPreferences'
+
+function isIOS(): boolean {
+  return /iPad|iPhone|iPod/.test(navigator.userAgent)
+}
+
+function isStandalone(): boolean {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    ('standalone' in navigator && (navigator as { standalone?: boolean }).standalone === true)
+  )
+}
+
+function IOSInstallCard() {
+  const { t } = useTranslation()
+  return (
+    <div className="rounded-xl bg-zinc-800/60 border border-zinc-700/60 p-4 space-y-3">
+      <div className="flex items-center gap-2.5">
+        <div className="w-8 h-8 rounded-lg bg-emerald-500/15 flex items-center justify-center flex-shrink-0">
+          <Bell size={15} className="text-emerald-400" />
+        </div>
+        <p className="text-sm font-semibold text-white leading-snug">
+          {t('notifications.iosTitle')}
+        </p>
+      </div>
+      <p className="text-xs text-zinc-400 leading-relaxed">{t('notifications.iosBody')}</p>
+      <ol className="space-y-2">
+        <li className="flex items-center gap-2.5">
+          <span className="w-5 h-5 rounded-full bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-300 flex-shrink-0">
+            1
+          </span>
+          <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+            <Share size={13} className="text-zinc-400 flex-shrink-0" />
+            {t('notifications.iosStep1')}
+          </div>
+        </li>
+        <li className="flex items-center gap-2.5">
+          <span className="w-5 h-5 rounded-full bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-300 flex-shrink-0">
+            2
+          </span>
+          <div className="flex items-center gap-1.5 text-xs text-zinc-300">
+            <Plus size={13} className="text-zinc-400 flex-shrink-0" />
+            {t('notifications.iosStep2')}
+          </div>
+        </li>
+        <li className="flex items-center gap-2.5">
+          <span className="w-5 h-5 rounded-full bg-zinc-700 flex items-center justify-center text-[10px] font-bold text-zinc-300 flex-shrink-0">
+            3
+          </span>
+          <span className="text-xs text-zinc-300">{t('notifications.iosStep3')}</span>
+        </li>
+      </ol>
+    </div>
+  )
+}
 
 function Toggle({
   checked,
@@ -73,6 +127,11 @@ export function NotificationSettings() {
     error: subError,
   } = useSubscribePush()
   const { preferences, savePreferences, isPending: prefPending } = useNotificationPreferences()
+
+  // iOS requires PWA to be installed (added to Home Screen) before push works
+  if (isIOS() && !isStandalone()) {
+    return <IOSInstallCard />
+  }
 
   if (state === 'unsupported') {
     return (

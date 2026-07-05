@@ -4,8 +4,10 @@ import { useNavigate, useSearch } from '@tanstack/react-router'
 import { useActiveCompetition } from '@features/competition/hooks/useActiveCompetition'
 import { useRounds } from '@features/competition/hooks/useRounds'
 import { useMatchesByRound } from '../hooks/useMatchesByRound'
+import { useMatchesByMatchday } from '../hooks/useMatchesByMatchday'
 import { useNowMatches, NOW_ROUND_ID } from '../hooks/useNowMatches'
 import { RoundTabs } from './RoundTabs'
+import { isGroupMatchdayId, matchdayFromId } from '../utils/matchdayUtils'
 import { MatchList } from './MatchList'
 
 export function MatchesPage() {
@@ -17,13 +19,20 @@ export function MatchesPage() {
   const { data: rounds } = useRounds(competition?.id)
 
   const isNow = selectedRoundId === NOW_ROUND_ID
+  const isMatchday = !!selectedRoundId && isGroupMatchdayId(selectedRoundId)
+  const activeMatchday = isMatchday ? matchdayFromId(selectedRoundId) : undefined
+
   const { data: nowMatches, isLoading: nowLoading } = useNowMatches(competition?.id)
   const { data: roundMatches, isLoading: roundLoading } = useMatchesByRound(
-    isNow ? undefined : selectedRoundId
+    isNow || isMatchday ? undefined : selectedRoundId
+  )
+  const { data: matchdayMatches, isLoading: matchdayLoading } = useMatchesByMatchday(
+    competition?.id,
+    activeMatchday
   )
 
-  const matches = isNow ? nowMatches : roundMatches
-  const isLoading = isNow ? nowLoading : roundLoading
+  const matches = isNow ? nowMatches : isMatchday ? matchdayMatches : roundMatches
+  const isLoading = isNow ? nowLoading : isMatchday ? matchdayLoading : roundLoading
 
   // Default to "Now" on first load (no round in URL)
   useEffect(() => {

@@ -92,20 +92,36 @@ export function MatchCard({ match }: { match: MatchWithTeams }) {
       <div className="flex items-center justify-between gap-4">
         {/* Home team */}
         <div className="flex-1 flex items-center gap-2.5 min-w-0">
-          <TeamFlag flagUrl={match.home_team.flag_url} name={match.home_team.name} size="md" />
-          <span className="text-sm font-medium text-white truncate">
-            {match.home_team.short_name}
-          </span>
+          {match.home_team ? (
+            <>
+              <TeamFlag flagUrl={match.home_team.flag_url} name={match.home_team.name} size="md" />
+              <span className="text-sm font-medium text-white truncate">
+                {match.home_team.short_name}
+              </span>
+            </>
+          ) : (
+            <span className="text-xs text-zinc-500 truncate leading-tight">
+              {match.home_team_label ?? '?'}
+            </span>
+          )}
         </div>
 
         <ScoreOrTime match={match} />
 
         {/* Away team */}
         <div className="flex-1 flex items-center justify-end gap-2.5 min-w-0">
-          <span className="text-sm font-medium text-white truncate text-right">
-            {match.away_team.short_name}
-          </span>
-          <TeamFlag flagUrl={match.away_team.flag_url} name={match.away_team.name} size="md" />
+          {match.away_team ? (
+            <>
+              <span className="text-sm font-medium text-white truncate text-right">
+                {match.away_team.short_name}
+              </span>
+              <TeamFlag flagUrl={match.away_team.flag_url} name={match.away_team.name} size="md" />
+            </>
+          ) : (
+            <span className="text-xs text-zinc-500 truncate leading-tight text-right">
+              {match.away_team_label ?? '?'}
+            </span>
+          )}
         </div>
       </div>
 

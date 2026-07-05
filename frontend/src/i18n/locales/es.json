@@ -29,6 +29,9 @@
     "noPredictions": "Sin predicciones para mostrar",
     "trySwitchingToEveryone": "Intenta cambiar a Todos",
     "roundsAriaLabel": "Rondas del torneo",
+    "groupMatchday1": "J1",
+    "groupMatchday2": "J2",
+    "groupMatchday3": "J3",
     "liveIndicator": "en vivo"
   },
   "prediction": {
@@ -38,7 +41,8 @@
     "pts": "pts",
     "proj": "proy.",
     "pens": "Pens",
-    "pensBonus": "+1 ganador · +2 exacto"
+    "pensBonus": "+1 ganador · +2 exacto",
+    "saved": "Predicción guardada"
   },
   "group": {
     "title": "Grupos",
@@ -95,10 +99,10 @@
     "roundR1": "J1",
     "roundR2": "J2",
     "roundR3": "J3",
-    "roundR32": "R32",
-    "roundR16": "R16",
-    "roundQF": "QF",
-    "roundSF": "SF",
+    "roundR32": "16vos",
+    "roundR16": "8vos",
+    "roundQF": "4tos",
+    "roundSF": "Semis",
     "roundFinal": "Final",
     "roundFilterTitle": "Jornada"
   },
@@ -136,6 +140,7 @@
     "result": "Resultado",
     "knockoutNote": "Todas las rondas eliminatorias (16vos en adelante) aplican un multiplicador ×2. Mismos niveles, el doble de puntos.",
     "tiersNote": "Los niveles se evalúan de arriba a abajo: el marcador exacto tiene prioridad sobre las coincidencias parciales.",
+    "penBonusDesc": "Si predijiste empate y el partido va a penales, puedes ganar un bonus adicional a tus puntos regulares.",
     "tier": {
       "exact": {
         "title": "Marcador exacto",
@@ -163,7 +168,10 @@
     "title": "Puntuación",
     "ariaLabel": "Reglas de puntuación",
     "x2Note": "×2 puntos en rondas eliminatorias",
-    "fullRules": "Reglas completas"
+    "fullRules": "Reglas completas",
+    "penBonus": "Bonus penales (empate eliminatoria)",
+    "penWinner": "Ganador correcto",
+    "penExact": "Resultado exacto"
   },
   "tier": {
     "exact": "Exacto",
@@ -191,6 +199,11 @@
     "pre1h": "Recordatorio 1 hora antes",
     "pre1hSub": "1 hora antes de un partido sin predicción",
     "pre5m": "Recordatorio 5 minutos antes",
-    "pre5mSub": "Último aviso — 5 minutos antes del inicio"
+    "pre5mSub": "Último aviso — 5 minutos antes del inicio",
+    "iosTitle": "Agrega a pantalla de inicio primero",
+    "iosBody": "Las notificaciones push en iOS solo funcionan cuando la app está instalada. Abre esta página en Safari y luego:",
+    "iosStep1": "Toca el botón Compartir",
+    "iosStep2": "Toca \"Agregar a pantalla de inicio\"",
+    "iosStep3": "Abre Quiniela desde tu pantalla de inicio"
   }
 }
