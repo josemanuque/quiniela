@@ -12,7 +12,7 @@ export function AppHeader() {
       <span className="text-xl font-bold text-white tracking-tight">{t('appTitle')} 2026</span>
 
       <div className="flex items-center gap-3">
-        <ScoringRulesPopover size={20} />
+        <ScoringRulesPopover size={16} />
 
         {profile && (
           <ProfileMenu>
